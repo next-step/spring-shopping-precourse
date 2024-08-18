@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: spring-shopping
+  jpa:
+    hibernate:
+      ddl-auto: create
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            loggerLevel: HEADERS  # FULL, BASIC, HEADERS, NONE ? ?? ??
+          purgoMalumClient:
+            url: https://www.purgomalum.com/service
+
+server:
+  servlet:
+    context-path: /api
+
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          filter:
+            CommonsRequestLoggingFilter: DEBUG
+
+security:
+  encrypt:
+    aes:
+      secret: ${ENCRYPT_AES_SECRET}
+      salt: ${ENCRYPT_AES_SALT}
+    token:
+      access:
+        secret: ${TOKEN_ACCESS_SECRET}
+        expire: ${TOKEN_ACCESS_EXPIRE}
+      refresh:
+        secret: ${TOKEN_REFRESH_SECRET}
+        expire: ${TOKEN_REFRESH_EXPIRE}

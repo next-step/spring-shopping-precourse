@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: spring-shopping
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            loggerLevel: FULL  # FULL, BASIC, HEADERS, NONE 중 선택 가능
+
+logging:
+  level:
+    shopping: DEBUG
+    feign: DEBUG
+
+security:
+  encrypt:
+    aes:
+      secret: ENCRYPT_AES_SECRET
+      salt: 1234567890
+    token:
+      access:
+        secret: TOKEN_ACCESS_SECRET
+        expire: 1234567890
+      refresh:
+        secret: TOKEN_REFRESH_SECRET
+        expire: 9876543210
