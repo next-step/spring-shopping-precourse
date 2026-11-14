@@ -22,7 +22,6 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
 
-
     @Transactional
     public TokenResponse register(MemberRegisterRequest request){
         if (memberRepository.existsByEmail(request.email())){

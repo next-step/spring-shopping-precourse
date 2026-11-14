@@ -38,7 +38,6 @@ class MemberServiceTest {
 
     @Test
     void 중복_이메일_회원가입(){
-
         MemberRegisterRequest request1 = new MemberRegisterRequest("a@a.com", "qwer1234!");
         MemberRegisterRequest request2 = new MemberRegisterRequest("a@a.com", "wasd1234!");
 
