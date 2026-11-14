@@ -21,21 +21,56 @@ Controller -> Service -> Repository -> DB
 
 ## API 명세서
 ### 회원 API
-회원 가입 `Post api/members/register` \
-로그인 `Post api/members/login` \
+회원 가입 `POST /api/members/register`
+- 가입 -> 201 (Created)
+- 유효성 실패 -> 400 (BadRequest)
+- 이메일 중복 -> 409 (Conflict)
 
+로그인 `POST /api/members/login`
+- 로그인 -> 200(OK)
+- 유효성 실패 -> 400 (BadRequest)
+- 이메일/비번 불일치 -> 401 (Unauthorized)
 
 ### 상품 Product
-상품 생성 `Post /api/products` \
-상품 단건 조회 `Get /api/products/{productId}` \
-상품 수정 `Put /api/products/{productId}`\
-상품 삭제 `DELETE /api/products/{productId}`\
+상품 생성 `POST /api/products` 
+- 생성 -> 201 (Created)
+- 유효성 검증 실패 -> 400 (BadRequest)
+- 상품이 이미 있음 -> 409 (Conflict)
+
+상품 단건 조회 `GET /api/products/{productId}` 
+- 성공 -> 200 (OK)
+- 상품없음 -> 404 (NotFound)
+
+상품 수정 `PUT /api/products/{productId}`
+- 성공 -> 200(OK) + 수정된 값 리턴
+- 유효성 검증 실패 -> 400 (BadRequest)
+- 대상 없음 -> 404 (NotFound)
+- 값 충돌 -> 409 (Conflict)
+
+상품 삭제 `DELETE /api/products/{productId}`
+- 삭제 성공 -> 200 (OK)
+- 유효성 검증 실패 -> 400 (BadRequest)
+- 대상 없음 -> 404 (NotFound)
+
 상품 목록 조회 `GET /api/products`
+- 성공 -> 200 (OK)
 
 ### 위시리스트 API
-위시 리스트 상품 추가 `POST /api/wishes`\
-위시 리스트 상품 삭제 `DELETE /api/wishes/{wishId}`\
-위시 리스트 상품 조회 `GET /api/wishes`\
+위시 리스트 상품 추가 `POST /api/wishes`
+- 생성 -> 201 (Created)
+- 인증실패 -> 401 (Unauthorized)
+- 상품 없음 -> 404 (NotFound)
+- 이미 존재 -> 409 (Conflict)
+
+위시 리스트 상품 삭제 `DELETE /api/wishes/{wishId}`
+- 삭제 -> 200 (OK)
+- 인증실패 -> 401 (Unauthorized)
+- 권한 없음 -> 403 (Forbidden)
+- 대상없음 -> 404 (NotFound)
+
+위시 리스트 상품 조회 `GET /api/wishes`
+- 성공 -> 200 (OK)
+- 인증실패 -> 401 (Unauthorized)
 
 ## 기능구현
 ### 상품
@@ -69,8 +104,19 @@ Controller -> Service -> Repository -> DB
 - 상품 이름 유효성 검사, JWT 발급/검증은 단위 테스트로 작성한다.
 - 회원/상품/위시리스트 API는 통합 테스트로 작성한다.
 
-## AI 활용.
+
+## AI 활용
 코드 생성은 하지 않고, 검색 및 학습 도우미 역할로 사용.
 코드는 구현 중 막히는 부분이 있을 때에 예제를 보여달라는 식으로 사용 예정.
 
+# 이 아래에 AI의 가이드를 받아 학습한 내용을 정리함
 
+### 도메인별 작업 순서
+1. 요구사항 API 정리. 
+2. Entity + 검증규칙 | 단위 테스트
+3. Repository | @DataJpaTest
+4. DTO
+5. Service | 서비스 테스트
+6. Controller
+7. 예외 처리
+8. API 인수 테스트 | 전체 흐름 확인
