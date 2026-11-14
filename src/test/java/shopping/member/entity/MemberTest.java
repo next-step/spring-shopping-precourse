@@ -13,10 +13,9 @@ class MemberTest {
     @Test
     void 회원을_생성하면_값이_저장된다(){
         // given & when
-        Member member = new Member("홍길동", "gildong@joson.kr", "fathermyfather12");
+        Member member = new Member("gildong@joson.kr", "fathermyfather12");
 
         //then
-        assertThat(member.getName()).isEqualTo("홍길동");
         assertThat(member.getEmail()).isEqualTo("gildong@joson.kr");
         assertThat(member.getPassword()).isEqualTo("fathermyfather12");
     }
@@ -25,7 +24,7 @@ class MemberTest {
     @NullAndEmptySource
     @ValueSource(strings = {" "})
     void 이메일이_비어있으면_예외가_발생한다(String email){
-        assertThatThrownBy(() -> new Member("홍길동", email, "fathermyfather12"))
+        assertThatThrownBy(() -> new Member(email, "fathermyfather12"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -33,7 +32,7 @@ class MemberTest {
     @NullAndEmptySource
     @ValueSource(strings = {" "})
     void 비밀번호가_비어있으면_예외가_발생한다(String password){
-        assertThatThrownBy(() -> new Member("홍길동", "gildong@joson.kr", password))
+        assertThatThrownBy(() -> new Member("gildong@joson.kr", password))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
