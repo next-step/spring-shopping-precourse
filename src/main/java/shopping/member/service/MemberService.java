@@ -6,6 +6,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shopping.auth.JwtProvider;
+import shopping.common.exception.BusinessException;
+import shopping.common.exception.ErrorCode;
 import shopping.member.dto.*;
 import shopping.member.entity.Member;
 import shopping.member.exception.AuthenticationFailedException;
@@ -25,7 +27,7 @@ public class MemberService {
     @Transactional
     public TokenResponse register(MemberRegisterRequest request){
         if (memberRepository.existsByEmail(request.email())){
-            throw new DuplicateEmailException();
+            throw new BusinessException(ErrorCode.DUPLICATE_EMAIL);
         }
         Member member = memberRepository.save(new Member(request.email(), passwordEncoder.encode(request.password())));
         return new TokenResponse(jwtProvider.createToken(member.getId(), member.getEmail()));
@@ -34,10 +36,10 @@ public class MemberService {
     @Transactional(readOnly = true)
     public TokenResponse login(MemberLoginRequest request) {
         Member member = memberRepository.findByEmail(request.email())
-                .orElseThrow(AuthenticationFailedException::new);
+                .orElseThrow(() -> new BusinessException(ErrorCode.AUTHENTICATION_FAILED));
 
         if (!passwordEncoder.matches(request.password(), member.getPassword())){
-            throw new AuthenticationFailedException();
+            throw new BusinessException(ErrorCode.AUTHENTICATION_FAILED);
         }
         return new TokenResponse(jwtProvider.createToken(member.getId(), member.getEmail()));
     }

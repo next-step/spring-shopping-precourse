@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import shopping.auth.JwtProvider;
+import shopping.common.exception.BusinessException;
+import shopping.common.exception.ErrorCode;
 import shopping.member.dto.MemberLoginRequest;
 import shopping.member.dto.MemberRegisterRequest;
 import shopping.member.dto.MemberRegisterResponse;
@@ -46,8 +48,8 @@ class MemberServiceTest {
 
         //중복 이메일 회원가입 시도
         assertThatThrownBy(()->memberService.register(request2))
-                .isInstanceOf(DuplicateEmailException.class)
-                .hasMessage("이미 가입된 계정입니다.");
+                .isInstanceOf(BusinessException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.DUPLICATE_EMAIL);
     }
 
     @Test
@@ -66,7 +68,18 @@ class MemberServiceTest {
     void 존재하지_않는_계정으로_로그인(){
         MemberLoginRequest memberLoginRequest = new MemberLoginRequest("a@a.com", "qwer1234!");
         assertThatThrownBy(()->memberService.login(memberLoginRequest))
-                .isInstanceOf(AuthenticationFailedException.class)
-                .hasMessage("이메일 또는 비밀번호가 올바르지 않습니다.");
+                .isInstanceOf(BusinessException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.AUTHENTICATION_FAILED);
+    }
+
+    @Test
+    void 비밀번호_틀림_로그인() {
+        MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest("a@a.com", "qwer1234!");
+        memberService.register(memberRegisterRequest);
+
+        MemberLoginRequest memberLoginRequest = new MemberLoginRequest("a@a.com", "asdf1234!");
+        assertThatThrownBy(()->memberService.login(memberLoginRequest))
+                .isInstanceOf(BusinessException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.AUTHENTICATION_FAILED);
     }
 }
