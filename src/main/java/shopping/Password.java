@@ -12,4 +12,18 @@ public record Password(
         }
         // 이외에 특수문자를 포함해야 한다거나 등등의 정책.
     }
+
+    public static Password create(
+            String rawPassword,
+            PasswordEncoder hashing
+    ) {
+        return new Password(hashing.hash(rawPassword));
+    }
+
+    public boolean matches(
+            String rawPassword,
+            PasswordEncoder hashing
+    ) {
+        return hashing.matches(rawPassword, value);
+    }
 }
