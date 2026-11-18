@@ -34,8 +34,8 @@ public class Product {
         checkStringLength(name, NAME_LENGTH, "상품명은 15자를 초과할 수 없습니다.");
         checkStringLength(imgUrl, IMG_URL_LENGTH, "이미지 주소는 500자를 초과할 수 없습니다.");
         checkSymbol(name, "한글, 영어, 숫자, (), [], +, -, &, /, _ 외의 특수문자는 사용불가");
-        checkIntSize(price, "가격은 양수여야합니다.");
-        checkIntSize(stock, "재고는 양수여야합니다.");
+        checkIntSize(price, "가격은 0 이상이여야 합니다.");
+        checkIntSize(stock, "재고는 0 이상이여야 합니다.");
         this.name = name;
         this.price = price;
         this.stock = stock;
