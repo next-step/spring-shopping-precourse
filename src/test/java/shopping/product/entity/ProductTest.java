@@ -94,7 +94,7 @@ class ProductTest {
                 10,
                 "https://i.ibb.co/BVQ48J5F/cat.jpg"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("가격은 양수여야합니다.");
+                .hasMessage("가격은 0 이상이여야 합니다.");
     }
     @Test
     void 경계값_0_가격을_지닌_상품등록() {
@@ -117,7 +117,7 @@ class ProductTest {
                 -10,
                 "https://i.ibb.co/BVQ48J5F/cat.jpg"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("재고는 양수여야합니다.");
+                .hasMessage("재고는 0 이상이여야 합니다.");
     }
 
     @Test
