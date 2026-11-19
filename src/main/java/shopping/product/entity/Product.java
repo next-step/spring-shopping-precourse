@@ -10,8 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Product {
 
-    final int NAME_LENGTH =15;
-    final int IMG_URL_LENGTH = 500;
+    private static final int NAME_LENGTH =15;
+    private static final int IMG_URL_LENGTH = 500;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,17 +30,21 @@ public class Product {
     private String imgUrl;
 
     public Product(String name, int price, int stock, String imgUrl){
+        validateProduct(name, price, stock, imgUrl);
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
+        this.imgUrl = imgUrl;
+    }
+    //검증 로직
+    private void validateProduct(String name, int price, int stock, String imgUrl){
         validateNotBlank(name, "이름은 필수 입력 항목입니다.");
         validateNotBlank(imgUrl, "이미지 주소는 필수 입력 항목입니다.");
         checkStringLength(name, NAME_LENGTH, "상품명은 15자를 초과할 수 없습니다.");
         checkStringLength(imgUrl, IMG_URL_LENGTH, "이미지 주소는 500자를 초과할 수 없습니다.");
         checkSymbol(name, "한글, 영어, 숫자, (), [], +, -, &, /, _ 외의 특수문자는 사용불가");
-        checkIntSize(price, "가격은 0 이상이여야 합니다.");
-        checkIntSize(stock, "재고는 0 이상이여야 합니다.");
-        this.name = name;
-        this.price = price;
-        this.stock = stock;
-        this.imgUrl = imgUrl;
+        checkIntOverSize(price, 0, "가격은 0 이상이어야 합니다.");
+        checkIntOverSize(stock, 0, "재고는 0 이상이어야 합니다.");
     }
 
     private void checkSymbol(String name, String message){
