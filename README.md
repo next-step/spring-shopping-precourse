@@ -269,9 +269,9 @@ PurgoMalum 호출이 실패했을 때 오류 종류에 맞는 메시지를 돌�
 
 ### 4. 상품 가격 도메인 `ProductPrice` (값 객체, 단위 테스트)
 위치: `src/main/java/shopping/domain/ProductPrice.java`
-- [ ] 음수는 허용하지 않음 (예외)
-- [ ] 0은 허용 *[결정]*
-- [ ] 양수는 허용
+- [x] 음수는 허용하지 않음 (예외)
+- [x] 0은 허용 *[결정]*
+- [x] 양수는 허용
 - 결정: 가격 타입은 `long`이다. 문서에 가격 범위 규정이 없어 정수 중 넓은 타입을 택했다. 상한은 두지 않는다 (`Long.MAX_VALUE`까지 허용). 소수(원 미만 단위)는 다루지 않는다.
 - 위반 시 `IllegalArgumentException`을 던진다.
 - 결과: 테스트 7개 추가 (`ProductPriceTest`).
