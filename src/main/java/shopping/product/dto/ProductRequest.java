@@ -1,4 +1,4 @@
 package shopping.product.dto;
 
-public class ProductRequest {
+public record ProductRequest(String name, int price, String imageUrl) {
 }
