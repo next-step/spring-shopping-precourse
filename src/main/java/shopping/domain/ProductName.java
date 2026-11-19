@@ -1,5 +1,6 @@
 package shopping.domain;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class ProductName {
@@ -8,11 +9,19 @@ public class ProductName {
 
     private final String value;
 
-    public ProductName(String value) {
+    public ProductName(String value, ProfanityChecker profanityChecker) {
+        Objects.requireNonNull(profanityChecker, "비속어 검사기는 null일 수 없습니다.");
         validateNotBlank(value);
         validateLength(value);
         validateCharacters(value);
+        validateProfanity(value, profanityChecker);
         this.value = value;
+    }
+
+    private void validateProfanity(String value, ProfanityChecker profanityChecker) {
+        if (profanityChecker.containsProfanity(value)) {
+            throw new IllegalArgumentException("상품 이름에 비속어가 포함될 수 없습니다.");
+        }
     }
 
     private void validateCharacters(String value) {

@@ -10,12 +10,15 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class ProductNameTest {
+    private static final ProfanityChecker NO_PROFANITY = text -> false;
+    private static final ProfanityChecker PROFANITY_SHIT = text -> text.contains("shit");
+
     @Test
     @DisplayName("공백 포함 15자 이하의 영문 이름은 생성할 수 있다")
     void createWithMaxLength() {
         String value = "abcde fghij klm";
 
-        ProductName name = new ProductName(value);
+        ProductName name = new ProductName(value, NO_PROFANITY);
 
         assertThat(name.value()).isEqualTo(value);
     }
@@ -25,7 +28,7 @@ class ProductNameTest {
     void createOverMaxLength() {
         String value = "abcde fghij klmn";
 
-        assertThatThrownBy(() -> new ProductName(value))
+        assertThatThrownBy(() -> new ProductName(value, NO_PROFANITY))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -34,7 +37,7 @@ class ProductNameTest {
     @ValueSource(strings = {" ", "   "})
     @DisplayName("null, 빈 값, 공백만 있는 이름은 예외가 발생한다")
     void createBlank(String value) {
-        assertThatThrownBy(() -> new ProductName(value))
+        assertThatThrownBy(() -> new ProductName(value, NO_PROFANITY))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -44,7 +47,7 @@ class ProductNameTest {
     void createWithAllowedSpecialCharacter(String special) {
         String value = "Item" + special + "A1";
 
-        ProductName name = new ProductName(value);
+        ProductName name = new ProductName(value, NO_PROFANITY);
 
         assertThat(name.value()).isEqualTo(value);
     }
@@ -56,7 +59,7 @@ class ProductNameTest {
     void createWithNotAllowedSpecialCharacter(String special) {
         String value = "Item" + special;
 
-        assertThatThrownBy(() -> new ProductName(value))
+        assertThatThrownBy(() -> new ProductName(value, NO_PROFANITY))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -66,8 +69,22 @@ class ProductNameTest {
     void createWithNonEnglish(String text) {
         String value = "Item" + text;
 
-        assertThatThrownBy(() -> new ProductName(value))
+        assertThatThrownBy(() -> new ProductName(value, NO_PROFANITY))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("비속어가 포함된 이름은 예외가 발생한다")
+    void createWithProfanity() {
+        assertThatThrownBy(() -> new ProductName("shit", PROFANITY_SHIT))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("비속어 검사기가 null이면 이름 값과 상관없이 NullPointerException이 발생한다")
+    void createWithNullChecker() {
+        assertThatThrownBy(() -> new ProductName("", null))
+                .isInstanceOf(NullPointerException.class);
     }
 
 }
