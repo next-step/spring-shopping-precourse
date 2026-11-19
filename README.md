@@ -301,10 +301,10 @@ PurgoMalum 호출이 실패했을 때 오류 종류에 맞는 메시지를 돌�
 ### 7. 상품 도메인 `Product` (단위 테스트)
 위치: `src/main/java/shopping/domain/Product.java`
 `ProductId`, `ProductName`, `ProductPrice`, `ProductImage`를 가진다.
-- [ ] 이름, 가격, 이미지로 상품을 생성할 수 있다 (ID는 저장 전에는 없음)
-- [ ] ID와 함께 상품을 생성할 수 있다
-- [ ] 이름, 가격, 이미지는 각 값 객체의 규칙을 그대로 따른다 (잘못된 값이면 생성 불가)
-- [ ] 상품 수정 시에도 같은 규칙이 적용된다
+- [x] 이름, 가격, 이미지로 상품을 생성할 수 있다 (ID는 저장 전에는 없음)
+- [x] ID와 함께 상품을 생성할 수 있다
+- [x] 이름, 가격, 이미지는 각 값 객체의 규칙을 그대로 따른다 (잘못된 값이면 생성 불가)
+- [x] 상품 수정 시에도 같은 규칙이 적용된다
 - 결정: `Product`는 원시 값이 아니라 값 객체(`ProductName`, `ProductPrice`, `ProductImage`)를 받는다. 값 객체는 만들어지는 순간 규칙을 검증하므로, 규칙을 어긴 값은 `Product`에 전달되기 전에 이미 `IllegalArgumentException`으로 막힌다. 그래서 `Product`는 규칙을 다시 검사하지 않고 `null`만 막는다 (`NullPointerException`).
 - 결정: 수정은 `update(name, price, image)`로 세 값을 한 번에 바꾼다. 부분 수정은 만들지 않는다 (API 명세의 `PUT`이 전체 수정이기 때문이 아니라, 문서에 부분 수정 요구가 없기 때문이다).
 - 결정: 수정이 실패하면(`null` 포함) 기존 값은 그대로 유지된다. 세 값을 모두 검사한 뒤에 대입한다.
