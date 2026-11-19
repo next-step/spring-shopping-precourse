@@ -239,13 +239,13 @@
 - 현재 비속어 테스트는 "검사기가 true를 주면 예외를 던진다"만 증명한다. 실제 비속어 판정은 3번(PurgoMalum 구현체)이 끝나야 검증된다.
 
 ### 3. 비속어 검사 구현 (PurgoMalum)
-- [ ] PurgoMalum API 연동 구현체 (`ProfanityChecker` 구현, `GET https://www.purgomalum.com/service/containsprofanity?text=...`): `shopping.infrastructure.PurgoMalumProfanityChecker`
-- [ ] 정상 응답 처리: 200 + `true`는 비속어 있음, 200 + `false`는 없음
-- [ ] 오류 응답 처리 (아래 표): `shopping.domain.ProfanityCheckException`의 `Reason`(`BAD_REQUEST`, `SERVICE_ERROR`, `CONNECTION_ERROR`, `INVALID_RESPONSE`)으로 구분. HTTP 상태/메시지로의 변환은 API 단계에서 한다.
-- [ ] 연동 구현체 테스트 (외부 호출은 `MockRestServiceServer`와 로컬 가짜 서버로 검증, 실제 PurgoMalum 호출은 테스트에 넣지 않는다): 총 29개
-- [ ] 요청 시 이름을 쿼리 값으로 인코딩 (`&`, `+`, `/`, 공백, 괄호가 포함된 이름도 안전하게 전달됨을 테스트로 확인)
-- [ ] 타임아웃 적용: `PurgoMalumRestClientFactory` (연결 2초, 읽기 3초 *[결정]*). 로컬 가짜 서버가 느리게 응답하는 경우로 검증.
-- [ ] 응답 본문은 정확히 `true`/`false`(소문자)만 인정. 그 외(`True`, 빈 본문, HTML, 204/302)는 `INVALID_RESPONSE`.
+- [x] PurgoMalum API 연동 구현체 (`ProfanityChecker` 구현, `GET https://www.purgomalum.com/service/containsprofanity?text=...`): `shopping.infrastructure.PurgoMalumProfanityChecker`
+- [x] 정상 응답 처리: 200 + `true`는 비속어 있음, 200 + `false`는 없음
+- [x] 오류 응답 처리 (아래 표): `shopping.domain.ProfanityCheckException`의 `Reason`(`BAD_REQUEST`, `SERVICE_ERROR`, `CONNECTION_ERROR`, `INVALID_RESPONSE`)으로 구분. HTTP 상태/메시지로의 변환은 API 단계에서 한다.
+- [x] 연동 구현체 테스트 (외부 호출은 `MockRestServiceServer`와 로컬 가짜 서버로 검증, 실제 PurgoMalum 호출은 테스트에 넣지 않는다): 총 29개
+- [x] 요청 시 이름을 쿼리 값으로 인코딩 (`&`, `+`, `/`, 공백, 괄호가 포함된 이름도 안전하게 전달됨을 테스트로 확인)
+- [x] 타임아웃 적용: `PurgoMalumRestClientFactory` (연결 2초, 읽기 3초 *[결정]*). 로컬 가짜 서버가 느리게 응답하는 경우로 검증.
+- [x] 응답 본문은 정확히 `true`/`false`(소문자)만 인정. 그 외(`True`, 빈 본문, HTML, 204/302)는 `INVALID_RESPONSE`.
 - 참고: 실제 PurgoMalum을 한 번 호출해 `shit`는 true, 특수문자 포함 이름은 false가 나오는 것을 확인했다 (임시 테스트로 확인 후 삭제).
 - 아직 안 한 것: `ProductName` 생성 지점에 이 구현체를 Spring 빈으로 연결하는 일은 상품 API 단계에서 한다.
 
