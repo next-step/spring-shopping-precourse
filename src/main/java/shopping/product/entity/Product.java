@@ -36,6 +36,28 @@ public class Product {
         this.stock = stock;
         this.imgUrl = imgUrl;
     }
+
+    //update
+    public void updateProduct(String name, int price, int stock, String imgUrl) {
+        validateProduct(name, price, stock, imgUrl);
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
+        this.imgUrl = imgUrl;
+    }
+
+    //재고 관리
+    public void increaseStock(int increase){
+        checkIntOverSize(increase, 1, "증가량은 1 이상이어야 합니다.");
+        checkIntOverSize(Integer.MAX_VALUE - increase, stock, "증가량이 너무 많습니다.");
+        this.stock += increase;
+    }
+    public void decreaseStock(int decrease){
+        checkIntOverSize(decrease, 1,"감소량은 1 이상이어야 합니다.");
+        checkIntOverSize(stock-decrease, 0,"재고는 0 이상이어야 합니다.");
+        this.stock -= decrease;
+    }
+
     //검증 로직
     private void validateProduct(String name, int price, int stock, String imgUrl){
         validateNotBlank(name, "이름은 필수 입력 항목입니다.");
