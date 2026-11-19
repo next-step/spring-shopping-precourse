@@ -80,8 +80,8 @@ public class Product {
             throw new IllegalArgumentException(message);
     }
 
-    private void checkIntSize(int num, String message){
-        if (0 > num)
+    private void checkIntOverSize(int num, int size ,String message){
+        if (size > num)
             throw new IllegalArgumentException(message);
     }
 
