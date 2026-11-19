@@ -45,4 +45,17 @@ public class ProductName {
     public String value() {
         return value;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        return other instanceof ProductName name && value.equals(name.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
 }

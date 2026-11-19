@@ -87,4 +87,14 @@ class ProductNameTest {
                 .isInstanceOf(NullPointerException.class);
     }
 
+    @Test
+    @DisplayName("값이 같으면 같은 이름이다")
+    void equality() {
+        ProductName name = new ProductName("Item", NO_PROFANITY);
+
+        assertThat(name).isEqualTo(new ProductName("Item", NO_PROFANITY));
+        assertThat(name).hasSameHashCodeAs(new ProductName("Item", NO_PROFANITY));
+        assertThat(name).isNotEqualTo(new ProductName("item", NO_PROFANITY));
+        assertThat(name).isNotEqualTo(new ProductName("Item2", NO_PROFANITY));
+    }
 }
