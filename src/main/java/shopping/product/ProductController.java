@@ -21,5 +21,10 @@ public class ProductController {
         return ResponseEntity.created(URI.create("/api/products/" + product.getId()))
                 .body(ProductResponse.from(product));
     }
+    @GetMapping("/{productId}")
+    public ResponseEntity<ProductResponse> findById(@PathVariable Long productId){
+        Product product = productService.findById(productId);
+        return  ResponseEntity.ok(ProductResponse.from(product));
+    }
 
 }

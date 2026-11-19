@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import shopping.exception.NotFoundException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -30,4 +32,16 @@ class ProductServiceTest {
         assertThat(product.getPrice()).isEqualTo(price);
         assertThat(product.getImageUrl()).isEqualTo(imageUrl);
     }
+    @Test
+    void 상품을_조회하다(){
+        Product saved = productService.create("키보드", 50000, "http://img.com/a.png");
+        Product found = productService.findById(saved.getId());
+        assertThat(found.getName()).isEqualTo("키보드");
+    }
+    @Test
+    void  존재하지_않는_상품을_조회하면_예외가_발생한다(){
+        assertThatThrownBy(() -> productService.findById(999L))
+                .isInstanceOf(NotFoundException.class);
+    }
+
 }
