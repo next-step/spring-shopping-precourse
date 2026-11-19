@@ -18,5 +18,4 @@ public record ProductCreateRequest(
 
         @NotBlank(message = "이미지 주소는 필수 입력 항목입니다.")
         String imgUrl
-
 ) {}
