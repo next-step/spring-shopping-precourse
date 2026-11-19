@@ -278,11 +278,11 @@ PurgoMalum 호출이 실패했을 때 오류 종류에 맞는 메시지를 돌�
 
 ### 5. 상품 이미지 도메인 `ProductImage` (값 객체, 단위 테스트)
 위치: `src/main/java/shopping/domain/ProductImage.java`
-- [ ] 빈 값/공백만 있는 값(`null` 포함)은 허용하지 않음 *[결정]*
-- [ ] `https`만 허용한다. `http`는 허용하지 않음 *[결정]* (대소문자 무시: `HTTPS://`는 허용, `HTTP://`는 거부)
-- [ ] `https`가 아닌 스킴은 모두 거부: `ftp`, `file`, `javascript`, `data`, 스킴 없음(`//example.com/a.png`, `example.com/a.png`)
-- [ ] 형식이 올바르지 않은 URL은 거부: 호스트 없음(`https://`, `https:///a.png`), 공백 포함(앞뒤 공백 포함), `<`, `>` 같은 허용되지 않는 문자
-- [ ] 정상 URL 허용: 경로, 포트, 쿼리 문자열(`?size=100&type=thumb`)이 있는 `https` URL
+- [x] 빈 값/공백만 있는 값(`null` 포함)은 허용하지 않음 *[결정]*
+- [x] `https`만 허용한다. `http`는 허용하지 않음 *[결정]* (대소문자 무시: `HTTPS://`는 허용, `HTTP://`는 거부)
+- [x] `https`가 아닌 스킴은 모두 거부: `ftp`, `file`, `javascript`, `data`, 스킴 없음(`//example.com/a.png`, `example.com/a.png`)
+- [x] 형식이 올바르지 않은 URL은 거부: 호스트 없음(`https://`, `https:///a.png`), 공백 포함(앞뒤 공백 포함), `<`, `>` 같은 허용되지 않는 문자
+- [x] 정상 URL 허용: 경로, 포트, 쿼리 문자열(`?size=100&type=thumb`)이 있는 `https` URL
 - 결정: 파일 확장자(`.png` 등)나 실제 이미지인지는 검사하지 않는다. 문서에 규칙이 없고, 확인하려면 외부 요청이 필요하기 때문이다.
 - 결정: 길이 제한은 두지 않는다 (문서에 규칙 없음).
 - 결정: 입력을 자동으로 다듬지 않는다 (`trim` 없음). 앞뒤 공백이 있으면 거부한다.
