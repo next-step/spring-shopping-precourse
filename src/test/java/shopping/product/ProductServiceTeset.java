@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.transaction.annotation.Transactional;
+import shopping.exception.BadRequestException;
 import shopping.exception.NotFoundException;
 import java.util.List;
 
@@ -70,5 +71,10 @@ class ProductServiceTest {
         productService.delete(saved.getId());
         assertThatThrownBy(() -> productService.findById(saved.getId()))
                 .isInstanceOf(NotFoundException.class);
+    }
+    @Test
+    void 상품_이름에_비속어가_있으면_예외가_발생한다() {
+        assertThatThrownBy(() -> productService.create("shit", 1000, "http://img.com/a.png"))
+                .isInstanceOf(BadRequestException.class);
     }
 }

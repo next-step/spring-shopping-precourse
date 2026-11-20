@@ -1,6 +1,7 @@
 package shopping.product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shopping.exception.BadRequestException;
 import shopping.exception.NotFoundException;
 
 import java.util.List;
@@ -8,12 +9,15 @@ import java.util.List;
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
+    private final PurgoMalumClient purgoMalumClient;
 
-    public ProductService(ProductRepository productRepository){
+    public ProductService(ProductRepository productRepository, PurgoMalumClient purgoMalumClient){
         this.productRepository = productRepository;
+        this.purgoMalumClient = purgoMalumClient;
     }
     @Transactional
     public Product create(String name, int price, String imageUrl) {
+        validateProfanity(name);
         Product product = new Product(name, price, imageUrl);
         return productRepository.save(product);
     }
@@ -28,6 +32,7 @@ public class ProductService {
         }
     @Transactional
     public Product update(Long id, String name, int price, String imageUrl){
+        validateProfanity(name);
         Product product = findById(id);
         product.update(name, price, imageUrl);
         return product;
@@ -37,5 +42,11 @@ public class ProductService {
         Product product = findById(id);
         productRepository.delete(product);
     }
+    private void validateProfanity(String name) {
+        if (purgoMalumClient.containsProfanity(name)) {
+            throw new BadRequestException("상품 이름에 비속어를 포함할 수 없습니다.");
+        }
+    }
+
 }
 
