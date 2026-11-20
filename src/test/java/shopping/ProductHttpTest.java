@@ -73,4 +73,33 @@ class ProductHttpTest {
 
         Assertions.assertThat(response.statusCode()).isEqualTo(400);
     }
+
+    @Test
+    void 상품을_수정하면_같은_ID로_새_정보를_조회한다() throws Exception {
+        var product = products.registeredProduct("우사기", 3000L, "https://example.com/usagi");
+        var http = new LocalHttp(port);
+        String path = "/api/products/" + product.id();
+
+        var updated = http.send("PUT", path, """
+                {"name":"새 상품","price":500,"url":"https://example.com/new"}
+                """, null);
+
+        Assertions.assertThat(updated.statusCode()).isEqualTo(204);
+        var body = LocalHttp.json(http.send("GET", path, "", null));
+        Assertions.assertThat(body.get("name").asString()).isEqualTo("새 상품");
+        Assertions.assertThat(body.get("price").asLong()).isEqualTo(500L);
+    }
+
+    @Test
+    void 상품을_삭제하면_다시_조회할_수_없다() throws Exception {
+        var product = products.registeredProduct("치이카와", 1000L, "https://example.com/first");
+        var http = new LocalHttp(port);
+        String path = "/api/products/" + product.id();
+
+        Assertions.assertThat(http.send("DELETE", path, "", null).statusCode()).isEqualTo(204);
+        Assertions.assertThat(http.send("GET", path, "", null).statusCode()).isEqualTo(404);
+        Assertions.assertThat(http.send("DELETE", path, "", null).statusCode()).isEqualTo(404);
+    }
+
+    // 잘못된 가격으로 수정할 때 기존 상품을 유지하는지도 확인할 수 있다. 생략.
 }
