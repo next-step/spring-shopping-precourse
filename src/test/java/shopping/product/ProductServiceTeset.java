@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import shopping.exception.NotFoundException;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 
 @SpringBootTest
 @Transactional
@@ -43,5 +46,21 @@ class ProductServiceTest {
         assertThatThrownBy(() -> productService.findById(999L))
                 .isInstanceOf(NotFoundException.class);
     }
+    @Test
+    void 상품_목록을_조회한다(){
+        productService.create("키보드", 50000, "http://img.com/a.png");
+        productService.create("마우스", 3000, "http://img.com/b.png");
 
+        List<Product> products = productService.findAll();
+        assertThat(products).hasSize(2);
+    }
+    @Test
+    void 상품을_수정한다(){
+        Product saved = productService.create("키보드", 50000, "http://img.com/a.png");
+        productService.update(saved.getId(), "마우스", 30000, "http://img.com/b.png");
+
+        Product found = productService.findById(saved.getId());
+        assertThat(found.getName()).isEqualTo("마우스");
+        assertThat(found.getPrice()).isEqualTo(30000);
+    }
 }

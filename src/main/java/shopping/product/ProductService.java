@@ -3,6 +3,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shopping.exception.NotFoundException;
 
+import java.util.List;
+
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
@@ -20,4 +22,15 @@ public class ProductService {
         return productRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("상품이 존재하지 않습니다."));
     }
-}
+    @Transactional(readOnly = true)
+    public List<Product> findAll(){
+        return  productRepository.findAll();
+        }
+    @Transactional
+    public Product update(Long id, String name, int price, String imageUrl){
+        Product product = findById(id);
+        product.update(name, price, imageUrl);
+        return product;
+    }
+    }
+

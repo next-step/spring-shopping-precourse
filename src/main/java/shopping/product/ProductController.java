@@ -1,6 +1,8 @@
 package shopping.product;
 
 import java.net.URI;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shopping.product.dto.ProductRequest;
@@ -26,5 +28,18 @@ public class ProductController {
         Product product = productService.findById(productId);
         return  ResponseEntity.ok(ProductResponse.from(product));
     }
-
+    @GetMapping
+    public ResponseEntity<List<ProductResponse>> findAll(){
+        List<ProductResponse> responses = productService.findAll().stream()
+                .map(ProductResponse::from)
+                .toList();
+        return ResponseEntity.ok(responses);
+    }
+    @PutMapping("/{productId}")
+    public ResponseEntity<ProductResponse> update(@PathVariable Long productId,
+                                                  @RequestBody ProductRequest request){
+        Product product = productService.update(productId, request.name(),
+                request.price(), request.imageUrl());
+        return ResponseEntity.ok(ProductResponse.from(product));
+    }
 }
