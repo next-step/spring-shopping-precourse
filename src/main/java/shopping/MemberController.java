@@ -21,13 +21,33 @@ public class MemberController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public TokenResponse registrationToken(@RequestBody RegistrationRequest request) {
+    public TokenResponse registrationToken(@RequestBody CredentialsRequest request) {
+        Email email = email(request);
         try {
-            if (request.email() == null || request.password() == null) {
-                throw new IllegalArgumentException();
-            }
-            String token = authentication.registrationToken(email(request.email()), request.password());
+            String token = authentication.registrationToken(email, request.password());
             return new TokenResponse(token);
+        } catch (IllegalArgumentException exception) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/login")
+    public TokenResponse loginToken(@RequestBody CredentialsRequest request) {
+        Email email = email(request);
+        try {
+            String token = authentication.loginToken(email, request.password());
+            return new TokenResponse(token);
+        } catch (IllegalArgumentException exception) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    private Email email(CredentialsRequest request) {
+        if (request.email() == null || request.password() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        try {
+            return email(request.email());
         } catch (IllegalArgumentException exception) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
@@ -41,7 +61,7 @@ public class MemberController {
         return new Email(parts[0], new Domain(parts[1]));
     }
 
-    public record RegistrationRequest(String email, String password) {
+    public record CredentialsRequest(String email, String password) {
     }
 
     public record TokenResponse(String token) {

@@ -73,4 +73,5 @@
 
 - `./gradlew bootRun --args='--spring.profiles.active=local'`
 - `POST /api/members/register`에 `email`, `password`를 JSON으로 보내면 토큰 반환.
+- `POST /api/members/login` → 토큰 반환.
 - 재시작하면 회원/토큰 초기화.
