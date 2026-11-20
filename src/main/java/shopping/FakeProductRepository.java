@@ -26,4 +26,19 @@ public final class FakeProductRepository implements ProductRepository {
     public synchronized List<Product> products() {
         return List.copyOf(products.values());
     }
+
+    @Override
+    public synchronized void update(Long id, String name, long price, String url) {
+        if (!products.containsKey(id)) {
+            throw new IllegalArgumentException("존재하지 않는 상품입니다");
+        }
+        products.put(id, new Product(id, name, price, url));
+    }
+
+    @Override
+    public synchronized void remove(Long id) {
+        if (products.remove(id) == null) {
+            throw new IllegalArgumentException("존재하지 않는 상품입니다");
+        }
+    }
 }
