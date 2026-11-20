@@ -47,7 +47,35 @@
 
 - [x] 모든 오류 응답은 JSON 형식으로 반환한다.
 
-### 구현 순서 
+### 구현 순서
 
-- [ ] 프로덕트 도메인
-    - [ ] 상품 이름 유효성 검사 (비속어 제외)
+1. [x] 상품 값 객체
+    - [x] 상품 이름 (`ProductName`): 비어 있음, 15자 초과, 허용되지 않은 특수 문자 검증
+    - [x] 상품 가격 (`Price`): 0 이상 검증
+    - [x] 상품 이미지 URL (`ImageUrl`): 비어 있음, http/https 형식 검증
+2. [x] 상품 도메인과 저장
+    - [x] 상품 엔티티 (`Product`)와 테이블 매핑 (Flyway `V1__create_products.sql`)
+    - [x] 상품 저장소 (`ProductRepository`)와 서비스 (`ProductService`)
+3. [x] 상품 CRUD API (`ProductController`, `products.http`)
+4. [x] 공통 예외 처리
+    - [x] JSON 오류 응답 (`ErrorResponse`)과 상태 코드를 가진 예외 (`ShoppingException` 하위 400/401/403/404/409)
+    - [x] 전역 예외 처리기 (`GlobalExceptionHandler`)와 상품 API 적용 (없는 상품 404, 잘못된 값 400)
+5. [x] 상품 API 테스트 (`ApiTest`, `ProductApiTest`)
+6. [x] 상품 이름 비속어 검사
+    - [x] PurgoMalum 비속어 검사기 (`ProfanityChecker`, `PurgoMalumProfanityChecker`)
+    - [x] 상품 생성·수정에 비속어 검사 적용, 테스트용 가짜 검사기 (`FakeProfanityCheckerConfig`)
+7. [x] JWT 토큰 생성과 검증 (`TokenProvider`, `JwtTokenProvider`)
+8. [x] 회원 가입과 로그인 (`Member`, `MemberService`, `MemberController`, BCrypt 비밀번호 암호화, `V2__create_members.sql`)
+9. [x] 로그인 인증 처리 (`@LoginMember`, `LoginMemberArgumentResolver`)
+10. [x] 위시 리스트 API (`Wish`, `WishService`, `WishController`, `V3__create_wishes.sql`)
+
+
+소감
+
+일단 처음 프리코스 PDF 를 봤을때 어떻게 시작해야할지 감도 오지 않았다. 
+그래서 일단 PDF 내용을 천천히 읽어보고 난 후에 구현할 우선순위를 AI를 이용해서 정리했다. 
+정리후에 AI 에게 코드를 어떻게 만들면 좋을지 물어보면서 어떤 방식으로 기능을 구현하는지 
+손으로 따라서 코딩해보며 이해하려고 노력했다. 
+테스트는 항상 AI에게 만들어달라고 하면 뚝딱 만들어 줬는데 직접 치려니까 생각보다 어려웠다.
+그래도 하다보니 점점 익숙해지는것을 느꼈던것 같다. 
+다른 언어를 공부할때에도 이런방식을 시도해 보면 좋을 것 같다. 
