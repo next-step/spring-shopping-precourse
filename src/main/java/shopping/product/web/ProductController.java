@@ -2,41 +2,69 @@ package shopping.product.web;
 
 import java.math.BigDecimal;
 import java.net.URI;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import shopping.product.application.InvalidProductException;
+import shopping.product.application.ProductNotFoundException;
+import shopping.product.application.ProductRepository.StoredProduct;
+import shopping.product.application.ProductService;
 import shopping.product.application.ProfanityCheckUnavailableException;
-import shopping.product.application.RegisterProduct;
-import shopping.product.application.RegisterProduct.RegisteredProduct;
-import shopping.product.domain.Product;
 
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
-    private final RegisterProduct registerProduct;
+    private final ProductService productService;
 
-    public ProductController(RegisterProduct registerProduct) {
-        this.registerProduct = registerProduct;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProductResponse> create(@RequestBody ProductRequest request) {
-        RegisteredProduct registered =
-                registerProduct.register(request.name(), request.price(), request.imageUrl());
-        Product product = registered.product();
+        StoredProduct registered =
+                productService.register(request.name(), request.price(), request.imageUrl());
         URI location = URI.create("/api/products/" + registered.id());
-        ProductResponse response = new ProductResponse(
-                registered.id(), product.name().name(), product.price(), product.imageUrl());
-        return ResponseEntity.created(location).body(response);
+        return ResponseEntity.created(location).body(ProductResponse.from(registered));
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ProductResponse> findAll() {
+        return productService.findAll().stream().map(ProductResponse::from).toList();
+    }
+
+    @GetMapping(path = "/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ProductResponse findById(@PathVariable("productId") long productId) {
+        return ProductResponse.from(productService.findById(productId));
+    }
+
+    @PutMapping(path = "/{productId}",
+            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ProductResponse update(
+            @PathVariable("productId") long productId, @RequestBody ProductRequest request) {
+        StoredProduct updated =
+                productService.update(productId, request.name(), request.price(), request.imageUrl());
+        return ProductResponse.from(updated);
+    }
+
+    @DeleteMapping("/{productId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable("productId") long productId) {
+        productService.delete(productId);
     }
 
     @ExceptionHandler(InvalidProductException.class)
@@ -48,7 +76,19 @@ public class ProductController {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse invalidRequestBody() {
-        return new ErrorResponse("상품 등록 요청의 JSON 형식과 필드 값을 확인해 주세요.");
+        return new ErrorResponse("상품 요청의 JSON 형식과 필드 값을 확인해 주세요.");
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse invalidProductId() {
+        return new ErrorResponse("상품 ID는 정수여야 합니다.");
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse productNotFound(ProductNotFoundException exception) {
+        return new ErrorResponse(exception.getMessage());
     }
 
     @ExceptionHandler(ProfanityCheckUnavailableException.class)
@@ -59,7 +99,11 @@ public class ProductController {
 
     public record ProductRequest(String name, BigDecimal price, String imageUrl) {}
 
-    public record ProductResponse(long id, String name, BigDecimal price, String imageUrl) {}
+    public record ProductResponse(long id, String name, BigDecimal price, String imageUrl) {
+        private static ProductResponse from(StoredProduct product) {
+            return new ProductResponse(product.id(), product.name(), product.price(), product.imageUrl());
+        }
+    }
 
     public record ErrorResponse(String message) {}
 }

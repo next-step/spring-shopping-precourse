@@ -6,6 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
+import shopping.product.application.ProductRepository.StoredProduct;
 import shopping.product.domain.Product;
 
 @Entity
@@ -34,5 +36,9 @@ public class ProductJpaEntity {
 
     long id() {
         return id;
+    }
+
+    StoredProduct toStoredProduct() {
+        return new StoredProduct(id, name, new BigDecimal(price), imageUrl);
     }
 }
