@@ -25,6 +25,15 @@ public class WishService {
         this.productRepository = productRepository;
     }
 
+    @Transactional
+    public void delete(Long memberId, Long wishId) {
+        findMember(memberId);
+        Wish wish = wishRepository.findByIdAndMemberId(wishId, memberId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "위시리스트 항목을 찾을 수 없습니다"));
+        wishRepository.delete(wish);
+    }
+
     @Transactional(readOnly = true)
     public List<WishResponse> findAll(Long memberId) {
         findMember(memberId);
