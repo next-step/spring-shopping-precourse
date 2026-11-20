@@ -2,14 +2,20 @@ package shopping.product;
 
 import java.util.regex.Pattern;
 import java.util.Objects;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 
-// @Embeddable
+@Embeddable
 public class ProductName {
     // static 은 해당 변수가 클래스에 붙어있다는 의미고 final은 상수의 의미
     private static final int MAX_LENGTH = 15;
     private static final Pattern ALLOWED = Pattern.compile("^[\\p{L}\\p{N} ()\\[\\]+\\-&/_]*$"); // 글자 전체, 숫자 전체, 소괄호, 대괄호, 특수문자를 포함하는 정규식 
 
+    @Column(name = "name", nullable = false, length = MAX_LENGTH)
     private String value;
+
+    protected ProductName() {
+    }
 
     public ProductName(String value) {
         validateNotBlank(value);
@@ -42,8 +48,8 @@ public class ProductName {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ProductName other)) return false;
+        if (this == o) { return true; }
+        if (!(o instanceof ProductName other)) { return false; }
 
         return Objects.equals(value, other.value);
     }

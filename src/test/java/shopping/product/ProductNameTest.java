@@ -22,7 +22,7 @@ class ProductNameTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @ValueSource (strings = {" ", "   "})
+    @ValueSource(strings = {" ", "   "})
     void 상품_이름이_비어있으면_예외가_발생한다(String value) {
         assertThatThrownBy(() -> new ProductName(value))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -52,13 +52,13 @@ class ProductNameTest {
     }
 
     @ParameterizedTest
-    @ValueSource (strings = {"콜라(L)", "[특가]과자", "과자+음료", "A-B", "A&B", "A/B", "A_B", "Coffee 2"})
+    @ValueSource(strings = {"콜라(L)", "[특가]과자", "과자+음료", "A-B", "A&B", "A/B", "A_B", "Coffee 2"})
     void 허용된_특수문자는_사용할_수_있다(String value) {
         assertThatCode(() -> new ProductName(value)).doesNotThrowAnyException();
     }
 
     @ParameterizedTest 
-    @ValueSource (strings = {"커피!", "콜라@", "과자#", "우유*", "빵.", "떡,", "차~", "물?", "커피☕"})
+    @ValueSource(strings = {"커피!", "콜라@", "과자#", "우유*", "빵.", "떡,", "차~", "물?", "커피☕"})
     void 허용되지_않는_특수문자는_사용할_수_없다(String value) {
         assertThatThrownBy(() -> new ProductName(value))
                 .isInstanceOf(IllegalArgumentException.class)

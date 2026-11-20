@@ -8,7 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class PriceTest {
     @ParameterizedTest 
-    @ValueSource (ints = {0, 1, 1000, 10000, 100000})
+    @ValueSource(ints = {0, 1, 1000, 10000, 100000})
     void 가격이_0이상이어야한다(int value) {
         Price price = new Price(value);
 
@@ -16,7 +16,7 @@ class PriceTest {
     }
 
     @ParameterizedTest 
-    @ValueSource (ints = {-1, -1000, -10000, -100000})
+    @ValueSource(ints = {-1, -1000, -10000, -100000})
     void 가격이_0미만이면_예외가_발생한다(int value) {
         assertThatThrownBy(() -> new Price(value))
                 .isInstanceOf(IllegalArgumentException.class)

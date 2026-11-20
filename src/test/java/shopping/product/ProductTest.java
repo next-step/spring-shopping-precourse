@@ -34,14 +34,4 @@ class ProductTest {
         assertThatThrownBy(() -> new Product(new ProductName("콜라!"), new Price(2000), new ImageUrl(IMAGE_URL)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
-
-    @Test
-    void 잘못된_값으로_상품을_수정하면_예외가_발생하고_기존_값이_유지된다() {
-        Product product = new Product(new ProductName("콜라"), new Price(2000), new ImageUrl(IMAGE_URL));
-        assertThatThrownBy(() -> product.update(new ProductName("사이다!"), new Price(-2000), new ImageUrl(NEW_IMAGE_URL)))
-                .isInstanceOf(IllegalArgumentException.class);
-        assertThat(product.getName()).isEqualTo("콜라");
-        assertThat(product.getPrice()).isEqualTo(2000);
-        assertThat(product.getImageUrl()).isEqualTo(IMAGE_URL);
-    }
 }

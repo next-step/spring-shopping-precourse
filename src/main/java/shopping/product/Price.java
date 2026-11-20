@@ -2,9 +2,18 @@ package shopping.product;
 
 import java.util.Objects;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+
+@Embeddable
 public class Price {
-    private final int value;
     private static final int MIN_VALUE = 0;
+    @Column(name = "price", nullable = false)
+    private int value;
+    
+
+    protected Price() {
+    }
 
     public Price(int value) {
         validateNotNegative(value);
@@ -26,8 +35,8 @@ public class Price {
     // 오버라이드 후 equals를 통해 1000원과 1000원을 같은 값으로 인식하게 할수 있음.
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Price other)) return false;
+        if (this == o) { return true; }
+        if (!(o instanceof Price other)) { return false; }
 
         return value == other.value;
     }

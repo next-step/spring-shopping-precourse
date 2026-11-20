@@ -3,11 +3,20 @@ package shopping.product;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+
+@Embeddable 
 public class ImageUrl {
-    private final String value;
     private static final int MAX_LENGTH = 255;
     private static final Pattern URL_PATTERN = Pattern.compile("^https?://\\S+$");
+    
+    @Column(name = "image_url", nullable = false, length = MAX_LENGTH)
+    private String value;
+    
 
+    protected ImageUrl() {
+    }
     public ImageUrl(String value) {
         validateNotBlank(value);
         validateLength(value);
@@ -39,8 +48,8 @@ public class ImageUrl {
 
     @Override 
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ImageUrl other)) return false;
+        if (this == o) { return true; }
+        if (!(o instanceof ImageUrl other)) { return false; }
 
         return Objects.equals(value, other.value);
     }
