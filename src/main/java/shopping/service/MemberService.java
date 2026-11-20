@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import shopping.dto.MemberRequest;
 import shopping.dto.MemberResponse;
+import shopping.dto.TokenResponse;
 import shopping.model.Member;
 import shopping.repository.MemberRepository;
 
@@ -13,10 +14,15 @@ import shopping.repository.MemberRepository;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
 
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
+    public MemberService(
+            MemberRepository memberRepository,
+            PasswordEncoder passwordEncoder,
+            TokenService tokenService) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
+        this.tokenService = tokenService;
     }
 
     public MemberResponse register(MemberRequest request) {
@@ -26,13 +32,17 @@ public class MemberService {
         return new MemberResponse(memberRepository.save(member).getId());
     }
 
-    public MemberResponse login(MemberRequest request) {
+    public TokenResponse login(MemberRequest request) {
         Member member = memberRepository.findByEmail(request.email())
                 .orElseThrow(this::invalidCredentials);
-        if (!passwordEncoder.matches(request.password(), member.getPasswordHash())) {
+        validatePassword(request.password(), member);
+        return tokenService.issue(member.getId());
+    }
+
+    private void validatePassword(String password, Member member) {
+        if (!passwordEncoder.matches(password, member.getPasswordHash())) {
             throw invalidCredentials();
         }
-        return new MemberResponse(member.getId());
     }
 
     private ResponseStatusException invalidCredentials() {

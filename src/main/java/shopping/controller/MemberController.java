@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import shopping.dto.MemberRequest;
 import shopping.dto.MemberResponse;
+import shopping.dto.TokenResponse;
 import shopping.service.MemberService;
 
 @RestController
@@ -21,7 +22,7 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public MemberResponse login(@Valid @RequestBody MemberRequest request) {
+    public TokenResponse login(@Valid @RequestBody MemberRequest request) {
         return memberService.login(request);
     }
 
