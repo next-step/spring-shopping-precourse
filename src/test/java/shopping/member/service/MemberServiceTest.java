@@ -9,11 +9,8 @@ import shopping.common.exception.BusinessException;
 import shopping.common.exception.ErrorCode;
 import shopping.member.dto.MemberLoginRequest;
 import shopping.member.dto.MemberRegisterRequest;
-import shopping.member.dto.MemberRegisterResponse;
 import shopping.member.dto.TokenResponse;
 import shopping.member.entity.Member;
-import shopping.member.exception.AuthenticationFailedException;
-import shopping.member.exception.DuplicateEmailException;
 import shopping.member.repository.MemberRepository;
 
 import java.util.Optional;
