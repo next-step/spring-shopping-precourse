@@ -1,0 +1,99 @@
+### 1. 상품 등록 (1번 상품 준비)
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{
+  "name": "아이스 아메리카노",
+  "price": 4500,
+  "imageUrl": "https://example.com/coffee.jpg"
+}
+
+### 2. 회원 A 가입 (토큰 저장)
+POST http://localhost:8080/api/members/register
+Content-Type: application/json
+
+{
+  "email": "a@test.com",
+  "password": "1234"
+}
+
+> {% client.global.set("tokenA", response.body.token); %}
+
+### 3. 회원 B 가입 (토큰 저장)
+POST http://localhost:8080/api/members/register
+Content-Type: application/json
+
+{
+  "email": "b@test.com",
+  "password": "1234"
+}
+
+> {% client.global.set("tokenB", response.body.token); %}
+
+### 4. 토큰 없이 위시 담기 (401)
+POST http://localhost:8080/api/wishes
+Content-Type: application/json
+
+{
+  "productId": 1
+}
+
+### 5. 가짜 토큰으로 위시 담기 (401)
+POST http://localhost:8080/api/wishes
+Content-Type: application/json
+Authorization: Bearer fake.token.value
+
+{
+  "productId": 1
+}
+
+### 6. A가 1번 상품 담기 (201)
+POST http://localhost:8080/api/wishes
+Content-Type: application/json
+Authorization: Bearer {{tokenA}}
+
+{
+  "productId": 1
+}
+
+### 7. A가 같은 상품 또 담기 (409)
+POST http://localhost:8080/api/wishes
+Content-Type: application/json
+Authorization: Bearer {{tokenA}}
+
+{
+  "productId": 1
+}
+
+### 8. A가 없는 상품 담기 (404)
+POST http://localhost:8080/api/wishes
+Content-Type: application/json
+Authorization: Bearer {{tokenA}}
+
+{
+  "productId": 99
+}
+
+### 9. A의 위시 목록 (200, 1개)
+GET http://localhost:8080/api/wishes
+Authorization: Bearer {{tokenA}}
+
+### 10. B의 위시 목록 (200, 빈 목록)
+GET http://localhost:8080/api/wishes
+Authorization: Bearer {{tokenB}}
+
+### 11. B가 A의 위시 삭제 (403)
+DELETE http://localhost:8080/api/wishes/1
+Authorization: Bearer {{tokenB}}
+
+### 12. A가 없는 위시 삭제 (404)
+DELETE http://localhost:8080/api/wishes/99
+Authorization: Bearer {{tokenA}}
+
+### 13. A가 자기 위시 삭제 (204)
+DELETE http://localhost:8080/api/wishes/1
+Authorization: Bearer {{tokenA}}
+
+### 14. 삭제 뒤 A의 위시 목록 (200, 빈 목록)
+GET http://localhost:8080/api/wishes
+Authorization: Bearer {{tokenA}}

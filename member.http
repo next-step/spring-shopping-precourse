@@ -1,0 +1,62 @@
+### 1. 회원 가입 (성공)
+POST http://localhost:8080/api/members/register
+Content-Type: application/json
+
+{
+  "email": "test@test.com",
+  "password": "1234"
+}
+
+### 2. 같은 이메일로 다시 가입 (중복)
+POST http://localhost:8080/api/members/register
+Content-Type: application/json
+
+{
+  "email": "test@test.com",
+  "password": "1234"
+}
+
+### 3. 이메일 형식 틀림
+POST http://localhost:8080/api/members/register
+Content-Type: application/json
+
+{
+  "email": "testtest.com",
+  "password": "1234"
+}
+
+### 4. 비밀번호 빈칸
+POST http://localhost:8080/api/members/register
+Content-Type: application/json
+
+{
+  "email": "new@test.com",
+  "password": ""
+}
+
+### 5. 로그인 (성공)
+POST http://localhost:8080/api/members/login
+Content-Type: application/json
+
+{
+  "email": "test@test.com",
+  "password": "1234"
+}
+
+### 6. 로그인 비밀번호 틀림
+POST http://localhost:8080/api/members/login
+Content-Type: application/json
+
+{
+  "email": "test@test.com",
+  "password": "9999"
+}
+
+### 7. 로그인 없는 이메일
+POST http://localhost:8080/api/members/login
+Content-Type: application/json
+
+{
+  "email": "nobody@test.com",
+  "password": "1234"
+}
