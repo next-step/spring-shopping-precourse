@@ -107,4 +107,21 @@ class PasswordTest {
         assertThat(password).hasSameHashCodeAs(new Password("abcd123!"));
         assertThat(password).isNotEqualTo(new Password("abcd123@"));
     }
+
+    @Test
+    @DisplayName("입력한 비밀번호가 같은지 스스로 확인하고, 대소문자를 구분한다")
+    void matches() {
+        Password password = new Password("Abcd123!");
+
+        assertThat(password.matches(new Password("Abcd123!"))).isTrue();
+        assertThat(password.matches(new Password("abcd123!"))).isFalse();
+        assertThat(password.matches(new Password("Abcd123@"))).isFalse();
+    }
+
+    @Test
+    @DisplayName("null과는 비교할 수 없다")
+    void matchesNull() {
+        assertThatThrownBy(() -> new Password("abcd123!").matches(null))
+                .isInstanceOf(NullPointerException.class);
+    }
 }
