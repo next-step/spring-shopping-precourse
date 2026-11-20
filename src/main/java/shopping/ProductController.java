@@ -1,10 +1,15 @@
 package shopping;
 
+import java.math.BigDecimal;
+import java.net.URI;
 import java.util.List;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -31,5 +36,32 @@ public class ProductController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return ProductResponse.response(product);
+    }
+
+    @PostMapping
+    public ResponseEntity<ProductResponse> registeredProduct(@RequestBody ProductRequest request) {
+        long price = price(request);
+        try {
+            Product product = repository.registeredProduct(request.name(), price, request.url());
+            return ResponseEntity.created(URI.create("/api/products/" + product.id()))
+                    .body(ProductResponse.response(product));
+        } catch (IllegalArgumentException exception) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private long price(ProductRequest request) {
+        if (request.name() == null || request.price() == null
+                || request.url() == null || request.url().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        try {
+            return request.price().longValueExact();
+        } catch (ArithmeticException exception) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public record ProductRequest(String name, BigDecimal price, String url) {
     }
 }

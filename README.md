@@ -76,3 +76,4 @@
 - `POST /api/members/login` → 토큰 반환.
 - 재시작하면 회원/토큰 초기화.
 - `GET /api/products`, `GET /api/products/{productId}` → 목록/단건 조회.
+- `POST /api/products` → 등록. Location으로 조회.

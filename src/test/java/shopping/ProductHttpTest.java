@@ -49,4 +49,28 @@ class ProductHttpTest {
 
         Assertions.assertThat(response.statusCode()).isEqualTo(404);
     }
+
+    @Test
+    void 무료_상품을_등록하고_Location으로_조회한다() throws Exception {
+        var http = new LocalHttp(port);
+        var created = http.send("POST", "/api/products", """
+                {"name":"무료 상품","price":0,"url":"https://example.com/free"}
+                """, null);
+
+        Assertions.assertThat(created.statusCode()).isEqualTo(201);
+        String location = created.headers().firstValue("Location").orElseThrow();
+        var found = http.send("GET", location, "", null);
+        Assertions.assertThat(found.statusCode()).isEqualTo(200);
+        Assertions.assertThat(LocalHttp.json(found)).isEqualTo(LocalHttp.json(created));
+        Assertions.assertThat(LocalHttp.json(created).get("price").asLong()).isZero();
+    }
+
+    @Test
+    void 가격을_생략하면_등록할_수_없다() throws Exception {
+        var response = new LocalHttp(port).send("POST", "/api/products", """
+                {"name":"치이카와","url":"https://example.com/first"}
+                """, null);
+
+        Assertions.assertThat(response.statusCode()).isEqualTo(400);
+    }
 }
