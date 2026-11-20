@@ -18,6 +18,11 @@ public class ProductService {
     }
 
     @Transactional
+    public void delete(Long productId) {
+        productRepository.delete(findProduct(productId));
+    }
+
+    @Transactional
     public ProductResponse update(Long productId, ProductRequest request) {
         Product product = findProduct(productId);
         profanityValidator.validate(request.name());
