@@ -17,6 +17,9 @@ public record Password(
             String rawPassword,
             PasswordEncoder hashing
     ) {
+        if (rawPassword.length() < 10) {
+            throw new IllegalArgumentException();
+        }
         return new Password(hashing.hash(rawPassword));
     }
 
