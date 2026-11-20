@@ -25,7 +25,7 @@ class MemberTest {
 
         assertThat(member.email()).isEqualTo(new Email("user@gmail.com"));
         assertThat(member.password()).isEqualTo(new Password("abcd123!"));
-        assertThat(member.wishList().all()).isEmpty();
+        assertThat(member.wishes()).isEmpty();
     }
 
     @Test
@@ -45,21 +45,21 @@ class MemberTest {
     void wishListAddAndRemove() {
         Member member = member("user@gmail.com");
 
-        member.wishList().add(product(1, "First"));
-        member.wishList().add(product(2, "Second"));
-        member.wishList().remove(new ProductId(1));
+        member.addWish(product(1, "First"));
+        member.addWish(product(2, "Second"));
+        member.removeWish(new ProductId(1));
 
-        assertThat(member.wishList().all()).hasSize(1);
-        assertThat(member.wishList().all().get(0).name().value()).isEqualTo("Second");
+        assertThat(member.wishes()).hasSize(1);
+        assertThat(member.wishes().get(0).name().value()).isEqualTo("Second");
     }
 
     @Test
     @DisplayName("회원의 위시 리스트도 같은 ID의 상품을 중복해서 담을 수 없다")
     void wishListDuplicate() {
         Member member = member("user@gmail.com");
-        member.wishList().add(product(1, "First"));
+        member.addWish(product(1, "First"));
 
-        assertThatThrownBy(() -> member.wishList().add(product(1, "Other")))
+        assertThatThrownBy(() -> member.addWish(product(1, "Other")))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -69,9 +69,65 @@ class MemberTest {
         Member first = member("first@gmail.com");
         Member second = member("second@gmail.com");
 
-        first.wishList().add(product(1, "First"));
+        first.addWish(product(1, "First"));
 
-        assertThat(first.wishList().all()).hasSize(1);
-        assertThat(second.wishList().all()).isEmpty();
+        assertThat(first.wishes()).hasSize(1);
+        assertThat(second.wishes()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("ID 없이 만든 회원(아직 가입 전)은 ID가 없다")
+    void createWithoutId() {
+        assertThat(member("user@gmail.com").id()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("ID와 함께 회원을 생성할 수 있다")
+    void createWithId() {
+        Member member = new Member(new MemberId(3), new Email("user@gmail.com"),
+                new Password("abcd123!"));
+
+        assertThat(member.id()).contains(new MemberId(3));
+        assertThat(member.email()).isEqualTo(new Email("user@gmail.com"));
+        assertThat(member.wishes()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("ID를 null로 넘기면 회원을 만들 수 없다")
+    void createWithNullId() {
+        Email email = new Email("user@gmail.com");
+        Password password = new Password("abcd123!");
+
+        assertThatThrownBy(() -> new Member(null, email, password))
+                .isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    @DisplayName("회원이 자기 이메일과 같은지 스스로 알려준다")
+    void hasEmail() {
+        Member member = member("user@gmail.com");
+
+        assertThat(member.hasEmail(new Email("user@gmail.com"))).isTrue();
+        assertThat(member.hasEmail(new Email("other@gmail.com"))).isFalse();
+    }
+
+    @Test
+    @DisplayName("회원이 입력한 비밀번호가 자기 비밀번호와 맞는지 스스로 알려준다")
+    void matchesPassword() {
+        Member member = member("user@gmail.com");
+
+        assertThat(member.matchesPassword(new Password("abcd123!"))).isTrue();
+        assertThat(member.matchesPassword(new Password("zzzz9999!"))).isFalse();
+    }
+
+    @Test
+    @DisplayName("이메일이나 비밀번호를 null로 물으면 예외가 발생한다")
+    void askWithNull() {
+        Member member = member("user@gmail.com");
+
+        assertThatThrownBy(() -> member.hasEmail(null))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> member.matchesPassword(null))
+                .isInstanceOf(NullPointerException.class);
     }
 }
