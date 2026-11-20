@@ -10,6 +10,8 @@ import shopping.auth.InvalidTokenException;
 import shopping.member.DuplicateEmailException;
 import shopping.member.LoginFailedException;
 import shopping.product.ProductNotFoundException;
+import shopping.wish.DuplicateWishException;
+import shopping.wish.WishNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -23,13 +25,13 @@ public class GlobalExceptionHandler {
         return toResponse(HttpStatus.BAD_REQUEST, "요청 본문이 올바른 JSON 형식이 아닙니다.");
     }
 
-    @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(ProductNotFoundException e) {
+    @ExceptionHandler({ProductNotFoundException.class, WishNotFoundException.class})
+    public ResponseEntity<ErrorResponse> handleNotFound(RuntimeException e) {
         return toResponse(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
-    @ExceptionHandler(DuplicateEmailException.class)
-    public ResponseEntity<ErrorResponse> handleDuplicate(DuplicateEmailException e) {
+    @ExceptionHandler({DuplicateEmailException.class, DuplicateWishException.class})
+    public ResponseEntity<ErrorResponse> handleConflict(RuntimeException e) {
         return toResponse(HttpStatus.CONFLICT, e.getMessage());
     }
 
