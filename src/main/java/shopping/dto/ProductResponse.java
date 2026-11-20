@@ -1,4 +1,6 @@
-package shopping.product;
+package shopping.dto;
+
+import shopping.model.Product;
 
 public record ProductResponse(Long id, String name, Long price, String imageUrl) {
     public static ProductResponse from(Product product) {

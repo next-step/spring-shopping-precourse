@@ -1,4 +1,4 @@
-package shopping.member;
+package shopping.dto;
 
 public record MemberResponse(Long memberId) {
 }

@@ -1,4 +1,4 @@
-package shopping.product;
+package shopping.controller;
 
 import jakarta.validation.Valid;
 import java.util.List;
@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import shopping.dto.ProductRequest;
+import shopping.dto.ProductResponse;
+import shopping.service.ProductService;
 
 @RestController
 @RequestMapping("/api/products")

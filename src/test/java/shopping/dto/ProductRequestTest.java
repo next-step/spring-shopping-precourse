@@ -1,4 +1,4 @@
-package shopping.product;
+package shopping.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

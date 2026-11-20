@@ -1,6 +1,6 @@
-package shopping.wish;
+package shopping.dto;
 
-import shopping.product.ProductResponse;
+import shopping.model.Wish;
 
 public record WishResponse(Long id, ProductResponse product) {
     public static WishResponse from(Wish wish) {

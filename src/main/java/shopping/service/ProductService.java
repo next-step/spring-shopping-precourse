@@ -1,10 +1,15 @@
-package shopping.product;
+package shopping.service;
 
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import shopping.dto.ProductRequest;
+import shopping.dto.ProductResponse;
+import shopping.model.Product;
+import shopping.repository.ProductRepository;
+import shopping.validation.ProfanityValidator;
 
 @Service
 public class ProductService {

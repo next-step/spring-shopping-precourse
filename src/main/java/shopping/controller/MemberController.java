@@ -1,4 +1,4 @@
-package shopping.member;
+package shopping.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import shopping.dto.MemberRequest;
+import shopping.dto.MemberResponse;
+import shopping.service.MemberService;
 
 @RestController
 @RequestMapping("/api/members")

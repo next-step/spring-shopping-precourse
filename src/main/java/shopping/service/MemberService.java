@@ -1,10 +1,14 @@
-package shopping.member;
+package shopping.service;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import shopping.dto.MemberRequest;
+import shopping.dto.MemberResponse;
+import shopping.model.Member;
+import shopping.repository.MemberRepository;
 
 @Service
 public class MemberService {
