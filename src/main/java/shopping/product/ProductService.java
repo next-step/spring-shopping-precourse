@@ -1,6 +1,8 @@
 package shopping.product;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ProductService {
@@ -11,6 +13,16 @@ public class ProductService {
             ProductRepository productRepository, ProfanityValidator profanityValidator) {
         this.productRepository = productRepository;
         this.profanityValidator = profanityValidator;
+    }
+
+    public ProductResponse findById(Long productId) {
+        return ProductResponse.from(findProduct(productId));
+    }
+
+    private Product findProduct(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "상품을 찾을 수 없습니다"));
     }
 
     public ProductResponse create(ProductRequest request) {
