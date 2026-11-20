@@ -32,5 +32,10 @@ public class ProductService {
         product.update(name, price, imageUrl);
         return product;
     }
+    @Transactional
+    public void delete(Long id){
+        Product product = findById(id);
+        productRepository.delete(product);
     }
+}
 

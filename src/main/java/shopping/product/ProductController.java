@@ -42,4 +42,9 @@ public class ProductController {
                 request.price(), request.imageUrl());
         return ResponseEntity.ok(ProductResponse.from(product));
     }
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Void> delete(@PathVariable Long productId){
+        productService.delete(productId);
+        return ResponseEntity.noContent().build();
+    }
 }

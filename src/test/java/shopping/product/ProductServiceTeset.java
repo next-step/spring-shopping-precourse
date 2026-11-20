@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.transaction.annotation.Transactional;
 import shopping.exception.NotFoundException;
 import java.util.List;
@@ -62,5 +63,12 @@ class ProductServiceTest {
         Product found = productService.findById(saved.getId());
         assertThat(found.getName()).isEqualTo("마우스");
         assertThat(found.getPrice()).isEqualTo(30000);
+    }
+    @Test
+    void 상품을_삭제한다(){
+        Product saved = productService.create("키보드", 50000, "http://img.com/a.png");
+        productService.delete(saved.getId());
+        assertThatThrownBy(() -> productService.findById(saved.getId()))
+                .isInstanceOf(NotFoundException.class);
     }
 }
