@@ -34,6 +34,10 @@ public class Wish {
         this.product = product;
     }
 
+    public Product getProduct() {
+        return product;
+    }
+
     public Long getId() {
         return id;
     }
