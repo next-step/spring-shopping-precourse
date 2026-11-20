@@ -9,7 +9,7 @@ public final class FakeWishRepository implements WishRepository {
     private long nextId = 1L;
 
     @Override
-    public synchronized Wish registered(Long memberId, Long productId) {
+    public synchronized Wish registeredWish(Long memberId, Long productId) {
         var wishes = wishesByMember.computeIfAbsent(memberId, id -> new LinkedHashMap<>());
         var existing = wishes.get(productId);
         if (existing != null) {

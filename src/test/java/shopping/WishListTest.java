@@ -15,7 +15,7 @@ class WishListTest {
         String token = tokens.token(1L);
         var product = products.registeredProduct("치이카와", 1000L, "www.example.com");
 
-        var wish = wishList.registered(token, product.id());
+        var wish = wishList.registeredWish(token, product.id());
 
         Assertions.assertThat(wishList.items(token)).containsExactly(new WishItem(wish.id(), product, 1));
         Assertions.assertThat(wishList.items(tokens.token(2L))).isEmpty();
@@ -25,7 +25,7 @@ class WishListTest {
     void 삭제된_상품은_목록에서_숨긴다() {
         String token = tokens.token(1L);
         var product = products.registeredProduct("치이카와", 1000L, "www.example.com");
-        wishList.registered(token, product.id());
+        wishList.registeredWish(token, product.id());
 
         products.remove(product.id());
 
@@ -36,7 +36,7 @@ class WishListTest {
     void 미등록_토큰으로는_상품을_담을_수_없다() {
         var product = products.registeredProduct("치이카와", 1000L, "www.example.com");
 
-        Assertions.assertThatThrownBy(() -> wishList.registered("unknown", product.id()))
+        Assertions.assertThatThrownBy(() -> wishList.registeredWish("unknown", product.id()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

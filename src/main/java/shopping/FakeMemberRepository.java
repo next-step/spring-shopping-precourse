@@ -21,7 +21,7 @@ public final class FakeMemberRepository implements MemberRepository {
     }
 
     @Override
-    public synchronized Member registered(Email email, Password password) {
+    public synchronized Member registeredMember(Email email, Password password) {
         if (member(email) != null) {
             throw new IllegalArgumentException("이미 등록된 회원");
         }

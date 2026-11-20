@@ -20,6 +20,6 @@ public final class Registration {
         Password password =
                 Password.create(rawPassword, passwordHashing);
 
-        return memberRepository.registered(email, password);
+        return memberRepository.registeredMember(email, password);
     }
 }

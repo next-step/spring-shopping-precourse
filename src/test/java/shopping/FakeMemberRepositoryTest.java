@@ -50,7 +50,7 @@ class FakeMemberRepositoryTest {
         var email = tomEmail;
         var password = tomPassword;
 
-        Assertions.assertThatThrownBy(() -> memberRepository.registered(email, password)).isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThatThrownBy(() -> memberRepository.registeredMember(email, password)).isInstanceOf(IllegalArgumentException.class);
 
     }
 }

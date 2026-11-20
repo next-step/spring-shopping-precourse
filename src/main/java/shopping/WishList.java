@@ -14,12 +14,12 @@ public final class WishList {
         this.wishes = wishes;
     }
 
-    public Wish registered(String token, Long productId) {
+    public Wish registeredWish(String token, Long productId) {
         Long memberId = memberId(token);
         if (products.product(productId) == null) {
             throw new IllegalArgumentException("존재하지 않는 상품입니다");
         }
-        return wishes.registered(memberId, productId);
+        return wishes.registeredWish(memberId, productId);
     }
 
     public List<WishItem> items(String token) {
