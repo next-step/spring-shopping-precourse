@@ -1,4 +1,7 @@
 package shopping.exception;
+public class ConflictException extends RuntimeException {
 
-public class ConflictException {
+    public ConflictException(String message) {
+        super(message);
+    }
 }
