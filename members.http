@@ -1,0 +1,41 @@
+### 회원 가입 (201, token 확인)
+POST http://localhost:8080/api/members/register
+Content-Type: application/json
+
+{"email": "user@example.com", "password": "password123"}
+
+### 같은 이메일로 다시 가입 (409)
+POST http://localhost:8080/api/members/register
+Content-Type: application/json
+
+{"email": "user@example.com", "password": "other-password"}
+
+### 이메일 형식 오류 (400)
+POST http://localhost:8080/api/members/register
+Content-Type: application/json
+
+{"email": "not-an-email", "password": "password123"}
+
+### 비밀번호 누락 (400)
+POST http://localhost:8080/api/members/register
+Content-Type: application/json
+
+{"email": "user2@example.com", "password": ""}
+
+### 로그인 (200, token 확인)
+POST http://localhost:8080/api/members/login
+Content-Type: application/json
+
+{"email": "user@example.com", "password": "password123"}
+
+### 틀린 비밀번호로 로그인 (401)
+POST http://localhost:8080/api/members/login
+Content-Type: application/json
+
+{"email": "user@example.com", "password": "wrong-password"}
+
+### 가입하지 않은 이메일로 로그인 (401)
+POST http://localhost:8080/api/members/login
+Content-Type: application/json
+
+{"email": "nobody@example.com", "password": "password123"}
