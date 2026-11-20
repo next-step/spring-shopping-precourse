@@ -16,15 +16,15 @@ public class ProfanityValidator {
     }
 
     public void validate(String name) {
-        Boolean containsProfanity = client.get()
+        String result = client.get()
                 .uri(builder -> builder.path("/service/containsprofanity")
                         .queryParam("text", "{text}").build(name))
                 .retrieve()
-                .body(Boolean.class);
-        if (containsProfanity == null) {
-            throw new IllegalStateException("비속어 검사 응답이 비어 있습니다");
+                .body(String.class);
+        if (!"true".equals(result) && !"false".equals(result)) {
+            throw new IllegalStateException("비속어 검사 응답을 해석할 수 없습니다");
         }
-        if (containsProfanity) {
+        if ("true".equals(result)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비속어는 사용할 수 없습니다");
         }
     }
