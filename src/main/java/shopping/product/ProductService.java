@@ -1,5 +1,6 @@
 package shopping.product;
 
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,6 +14,12 @@ public class ProductService {
             ProductRepository productRepository, ProfanityValidator profanityValidator) {
         this.productRepository = productRepository;
         this.profanityValidator = profanityValidator;
+    }
+
+    public List<ProductResponse> findAll() {
+        return productRepository.findAll().stream()
+                .map(ProductResponse::from)
+                .toList();
     }
 
     public ProductResponse findById(Long productId) {
