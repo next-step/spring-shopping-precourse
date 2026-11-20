@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import shopping.member.entity.Member;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -94,7 +93,7 @@ class ProductTest {
                 10,
                 "https://i.ibb.co/BVQ48J5F/cat.jpg"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("가격은 0 이상이여야 합니다.");
+                .hasMessage("가격은 0 이상이어야 합니다.");
     }
     @Test
     void 경계값_0_가격을_지닌_상품등록() {
@@ -117,7 +116,7 @@ class ProductTest {
                 -10,
                 "https://i.ibb.co/BVQ48J5F/cat.jpg"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("재고는 0 이상이여야 합니다.");
+                .hasMessage("재고는 0 이상이어야 합니다.");
     }
 
     @Test
@@ -132,4 +131,33 @@ class ProductTest {
                 .containsExactly("돼지뚱냥이", 10_000, 0, "https://i.ibb.co/BVQ48J5F/cat.jpg");
     }
 
+
+    @Test
+    void 상품_수정() {
+        Product product = new Product("돼지뚱냥이", 1000, 1, "https://i.ibb.co/a.jpg");
+
+        product.updateProduct("뚱냥이", 2000, 5, "https://i.ibb.co/b.jpg");
+
+        assertThat(product)
+                .extracting(Product::getName, Product::getPrice, Product::getStock, Product::getImgUrl)
+                .containsExactly("뚱냥이", 2000, 5, "https://i.ibb.co/b.jpg");
+    }
+
+    @Test
+    void 재고_증가() {
+        Product product = new Product("돼지뚱냥이", 1000, 1, "https://i.ibb.co/a.jpg");
+
+        product.increaseStock(4);
+
+        assertThat(product.getStock()).isEqualTo(5);
+    }
+
+    @Test
+    void 재고_감소() {
+        Product product = new Product("돼지뚱냥이", 1000, 5, "https://i.ibb.co/a.jpg");
+
+        product.decreaseStock(2);
+
+        assertThat(product.getStock()).isEqualTo(3);
+    }
 }
