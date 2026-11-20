@@ -12,8 +12,9 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import shopping.member.web.MemberController;
 import shopping.shared.application.RequestFailure;
 import shopping.shared.application.RequestFailure.Reason;
+import shopping.wish.web.WishController;
 
-@RestControllerAdvice(assignableTypes = MemberController.class)
+@RestControllerAdvice(assignableTypes = {MemberController.class, WishController.class})
 public class ShoppingErrorHandler {
     private static final Map<Reason, HttpStatus> STATUSES = Map.of(
             Reason.INVALID_INPUT, HttpStatus.BAD_REQUEST,
