@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 public record Product(
         Long id,
         String name,
+        long price,
         String url
 ) {
     private static final Pattern VALID_PATTERN =
@@ -24,6 +25,9 @@ public record Product(
         }
         if (!VALID_PATTERN.matcher(name).matches()) {
             throw new IllegalArgumentException();
+        }
+        if (price < 0) {
+            throw new IllegalArgumentException("상품 가격은 0원 이상이어야 합니다");
         }
     }
 }
