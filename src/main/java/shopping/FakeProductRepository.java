@@ -7,11 +7,16 @@ import org.jspecify.annotations.Nullable;
 
 public final class FakeProductRepository implements ProductRepository {
     private final Map<Long, Product> products = new LinkedHashMap<>();
+    private final ProductNameFilter productNameFilter;
     private long nextId = 1L;
+
+    public FakeProductRepository(ProductNameFilter productNameFilter) {
+        this.productNameFilter = productNameFilter;
+    }
 
     @Override
     public synchronized Product registeredProduct(String name, long price, String url) {
-        var product = new Product(nextId, name, price, url);
+        var product = new Product(nextId, name, price, url, productNameFilter);
         products.put(product.id(), product);
         nextId++;
         return product;
@@ -32,7 +37,7 @@ public final class FakeProductRepository implements ProductRepository {
         if (!products.containsKey(id)) {
             throw new IllegalArgumentException("존재하지 않는 상품입니다");
         }
-        products.put(id, new Product(id, name, price, url));
+        products.put(id, new Product(id, name, price, url, productNameFilter));
     }
 
     @Override

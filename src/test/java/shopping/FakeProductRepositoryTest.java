@@ -1,10 +1,12 @@
 package shopping;
 
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class FakeProductRepositoryTest {
-    private final ProductRepository repository = new FakeProductRepository();
+    private final ProductNameFilter filter = new DefaultProductNameFilter(List.of("금칙어"));
+    private final ProductRepository repository = new FakeProductRepository(filter);
 
     @Test
     void 등록한_상품을_ID로_조회한다() {
@@ -26,7 +28,7 @@ class FakeProductRepositoryTest {
     void 상품을_수정해도_ID와_등록_순서는_유지된다() {
         var first = repository.registeredProduct("치이카와", 1000L, "www.example.com");
         var second = repository.registeredProduct("하치와레", 2000L, "www.example.com");
-        var updated = new Product(first.id(), "우사기", 3000L, "www.example.com/usagi");
+        var updated = new Product(first.id(), "우사기", 3000L, "www.example.com/usagi", filter);
 
         repository.update(first.id(), updated.name(), updated.price(), updated.url());
 
@@ -52,6 +54,16 @@ class FakeProductRepositoryTest {
 
         Assertions.assertThat(repository.product(product.id())).isNull();
         Assertions.assertThat(repository.products()).isEmpty();
+    }
+
+    @Test
+    void 이름에_비속어가_있으면_기존_상품을_유지한다() {
+        var product = repository.registeredProduct("치이카와", 1000L, "www.example.com");
+
+        Assertions.assertThatThrownBy(
+                () -> repository.update(product.id(), "금칙어인형", 1000L, "www.example.com"))
+                .isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThat(repository.product(product.id())).isEqualTo(product);
     }
 
     // 미등록 ID로 수정하거나 삭제하면 예외가 발생하는지도 테스트할 수 있다. 생략.
