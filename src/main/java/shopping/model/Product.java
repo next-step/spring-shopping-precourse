@@ -2,20 +2,28 @@ package shopping.model;
 
 public class Product {
     private Long id;
-    private String name;
+    private ProductName name;
     private Long price;
     private String imageUrl;
 
-    public Product(String name, Long price, String imageUrl) {
+    public Product(ProductName name, Long price, String imageUrl) {
+        validateFields(name, price, imageUrl);
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
     }
 
-    public void update(String name, Long price, String imageUrl) {
+    public void update(ProductName name, Long price, String imageUrl) {
+        validateFields(name, price, imageUrl);
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+    }
+
+    private void validateFields(ProductName name, Long price, String imageUrl) {
+        if (name == null || price == null || imageUrl == null) {
+            throw new IllegalArgumentException("상품 정보는 null일 수 없습니다");
+        }
     }
 
     public Long getId() {
@@ -23,11 +31,14 @@ public class Product {
     }
 
     public void assignId(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("상품 ID는 null일 수 없습니다");
+        }
         this.id = id;
     }
 
     public String getName() {
-        return name;
+        return name.value();
     }
 
     public Long getPrice() {

@@ -7,6 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 import shopping.dto.ProductRequest;
 import shopping.dto.ProductResponse;
 import shopping.model.Product;
+import shopping.model.ProductName;
 import shopping.repository.ProductRepository;
 import shopping.validation.ProfanityValidator;
 
@@ -28,7 +29,7 @@ public class ProductService {
     public ProductResponse update(Long productId, ProductRequest request) {
         Product product = findProduct(productId);
         profanityValidator.validate(request.name());
-        product.update(request.name(), request.price(), request.imageUrl());
+        product.update(new ProductName(request.name()), request.price(), request.imageUrl());
         return ProductResponse.from(product);
     }
 
@@ -50,7 +51,8 @@ public class ProductService {
 
     public ProductResponse create(ProductRequest request) {
         profanityValidator.validate(request.name());
-        Product product = new Product(request.name(), request.price(), request.imageUrl());
+        Product product = new Product(
+                new ProductName(request.name()), request.price(), request.imageUrl());
         return ProductResponse.from(productRepository.save(product));
     }
 }

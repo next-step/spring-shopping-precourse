@@ -9,6 +9,7 @@ import shopping.model.Email;
 import shopping.model.Member;
 import shopping.model.PasswordHash;
 import shopping.model.Product;
+import shopping.model.ProductName;
 import shopping.model.Wish;
 
 class WishRepositoryTest {
@@ -24,7 +25,8 @@ class WishRepositoryTest {
         ProductRepository productRepository = new ProductRepository();
         firstMember = memberRepository.save(createMember("first@example.com"));
         secondMember = memberRepository.save(createMember("second@example.com"));
-        product = productRepository.save(new Product("상품", 1_000L, "image-url"));
+        product = productRepository.save(
+                new Product(new ProductName("상품"), 1_000L, "image-url"));
     }
 
     private Member createMember(String email) {
