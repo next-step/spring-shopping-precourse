@@ -24,6 +24,11 @@ public class MemberController {
         return new TokenResponse(members.register(request.email(), request.password()));
     }
 
+    @PostMapping(path = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public TokenResponse login(@RequestBody Credentials request) {
+        return new TokenResponse(members.login(request.email(), request.password()));
+    }
+
     public record Credentials(String email, String password) {}
 
     public record TokenResponse(String token) {}

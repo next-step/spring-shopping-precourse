@@ -1,13 +1,16 @@
 package shopping.member.application;
 
 import static shopping.shared.application.RequestFailure.Reason.CONFLICT;
+import static shopping.shared.application.RequestFailure.Reason.INVALID_CREDENTIALS;
 import static shopping.shared.application.RequestFailure.Reason.INVALID_INPUT;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shopping.member.domain.Member;
 import shopping.shared.application.RequestFailure;
 
 @Service
@@ -37,6 +40,18 @@ public class MemberService {
         return tokens.issue(memberId);
     }
 
+    public String login(String email, String password) {
+        String normalizedEmail = normalizeEmail(email);
+        if (!validCredentials(normalizedEmail, password)) {
+            throw invalidCredentials();
+        }
+        Optional<Member> member = members.findByEmail(normalizedEmail);
+        if (!passwords.matches(password, member.map(Member::passwordHash))) {
+            throw invalidCredentials();
+        }
+        return tokens.issue(member.orElseThrow(MemberService::invalidCredentials).id());
+    }
+
     private static String normalizeEmail(String email) {
         if (email == null) {
             return "";
@@ -48,5 +63,9 @@ public class MemberService {
         return email.length() <= MAX_EMAIL_LENGTH && EMAIL.matcher(email).matches()
                 && password != null && !password.isBlank()
                 && password.getBytes(StandardCharsets.UTF_8).length <= MAX_PASSWORD_BYTES;
+    }
+
+    private static RequestFailure invalidCredentials() {
+        return new RequestFailure(INVALID_CREDENTIALS, "이메일 또는 비밀번호가 일치하지 않습니다.");
     }
 }
