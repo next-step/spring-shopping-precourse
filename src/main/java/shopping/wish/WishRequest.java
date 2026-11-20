@@ -1,4 +1,4 @@
 package shopping.wish;
 
-public class WishRequest {
+public record WishRequest(Long productId) {
 }
