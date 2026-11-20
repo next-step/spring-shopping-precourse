@@ -5,7 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import shopping.model.Email;
 import shopping.model.Member;
+import shopping.model.PasswordHash;
 import shopping.model.Product;
 import shopping.model.Wish;
 
@@ -20,9 +22,13 @@ class WishRepositoryTest {
         wishRepository = new WishRepository();
         MemberRepository memberRepository = new MemberRepository();
         ProductRepository productRepository = new ProductRepository();
-        firstMember = memberRepository.save(new Member("first@example.com", "password"));
-        secondMember = memberRepository.save(new Member("second@example.com", "password"));
+        firstMember = memberRepository.save(createMember("first@example.com"));
+        secondMember = memberRepository.save(createMember("second@example.com"));
         product = productRepository.save(new Product("상품", 1_000L, "image-url"));
+    }
+
+    private Member createMember(String email) {
+        return new Member(new Email(email), new PasswordHash("password"));
     }
 
     @Test

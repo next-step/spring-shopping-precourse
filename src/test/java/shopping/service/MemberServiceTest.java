@@ -13,7 +13,9 @@ import org.springframework.web.server.ResponseStatusException;
 import shopping.dto.MemberRequest;
 import shopping.dto.TokenResponse;
 import shopping.model.AuthToken;
+import shopping.model.Email;
 import shopping.model.Member;
+import shopping.model.PasswordHash;
 import shopping.repository.MemberRepository;
 import shopping.repository.TokenRepository;
 
@@ -34,7 +36,9 @@ class MemberServiceTest {
         TokenService tokenService = new TokenService(new FixedTokenGenerator(), tokenRepository);
         memberService = new MemberService(memberRepository, passwordEncoder, tokenService);
         member = memberRepository.save(
-                new Member("user@example.com", passwordEncoder.encode("password")));
+                new Member(
+                        new Email("user@example.com"),
+                        new PasswordHash(passwordEncoder.encode("password"))));
     }
 
     @Test

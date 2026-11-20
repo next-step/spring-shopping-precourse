@@ -2,10 +2,13 @@ package shopping.model;
 
 public class Member {
     private Long id;
-    private final String email;
-    private final String passwordHash;
+    private final Email email;
+    private final PasswordHash passwordHash;
 
-    public Member(String email, String passwordHash) {
+    public Member(Email email, PasswordHash passwordHash) {
+        if (email == null || passwordHash == null) {
+            throw new IllegalArgumentException("회원 정보는 null일 수 없습니다");
+        }
         this.email = email;
         this.passwordHash = passwordHash;
     }
@@ -15,14 +18,17 @@ public class Member {
     }
 
     public void assignId(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("회원 ID는 null일 수 없습니다");
+        }
         this.id = id;
     }
 
-    public String getEmail() {
+    public Email getEmail() {
         return email;
     }
 
-    public String getPasswordHash() {
+    public PasswordHash getPasswordHash() {
         return passwordHash;
     }
 }

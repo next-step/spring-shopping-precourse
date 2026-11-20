@@ -5,13 +5,14 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Repository;
+import shopping.model.Email;
 import shopping.model.Member;
 
 @Repository
 public class MemberRepository {
     private final AtomicLong sequence = new AtomicLong();
     private final Map<Long, Member> members = new ConcurrentHashMap<>();
-    private final Map<String, Member> membersByEmail = new ConcurrentHashMap<>();
+    private final Map<Email, Member> membersByEmail = new ConcurrentHashMap<>();
 
     public synchronized Member save(Member member) {
         member.assignId(sequence.incrementAndGet());
@@ -20,7 +21,7 @@ public class MemberRepository {
         return member;
     }
 
-    public boolean existsByEmail(String email) {
+    public boolean existsByEmail(Email email) {
         return membersByEmail.containsKey(email);
     }
 
@@ -28,7 +29,7 @@ public class MemberRepository {
         return Optional.ofNullable(members.get(memberId));
     }
 
-    public Optional<Member> findByEmail(String email) {
+    public Optional<Member> findByEmail(Email email) {
         return Optional.ofNullable(membersByEmail.get(email));
     }
 }
