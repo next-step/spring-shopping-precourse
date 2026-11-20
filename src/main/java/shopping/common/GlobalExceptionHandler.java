@@ -6,6 +6,9 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.RestClientException;
+import shopping.auth.InvalidTokenException;
+import shopping.member.DuplicateEmailException;
+import shopping.member.LoginFailedException;
 import shopping.product.ProductNotFoundException;
 
 @RestControllerAdvice
@@ -23,6 +26,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(ProductNotFoundException e) {
         return toResponse(HttpStatus.NOT_FOUND, e.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicate(DuplicateEmailException e) {
+        return toResponse(HttpStatus.CONFLICT, e.getMessage());
+    }
+
+    @ExceptionHandler({LoginFailedException.class, InvalidTokenException.class})
+    public ResponseEntity<ErrorResponse> handleUnauthorized(RuntimeException e) {
+        return toResponse(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 
     @ExceptionHandler(RestClientException.class)
