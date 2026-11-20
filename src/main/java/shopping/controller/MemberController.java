@@ -1,10 +1,7 @@
 package shopping.controller;
 
 import jakarta.validation.Valid;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ProblemDetail;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,12 +18,6 @@ public class MemberController {
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ProblemDetail duplicateEmail(DataIntegrityViolationException exception) {
-        return ProblemDetail.forStatusAndDetail(
-                HttpStatus.CONFLICT, "이미 등록된 이메일입니다");
     }
 
     @PostMapping("/login")

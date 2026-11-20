@@ -3,7 +3,6 @@ package shopping.service;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import shopping.dto.WishResponse;
 import shopping.model.Member;
@@ -28,7 +27,6 @@ public class WishService {
         this.productRepository = productRepository;
     }
 
-    @Transactional
     public void delete(Long memberId, Long wishId) {
         findMember(memberId);
         Wish wish = wishRepository.findByIdAndMemberId(wishId, memberId)
@@ -37,7 +35,6 @@ public class WishService {
         wishRepository.delete(wish);
     }
 
-    @Transactional(readOnly = true)
     public List<WishResponse> findAll(Long memberId) {
         findMember(memberId);
         return wishRepository.findAllByMemberId(memberId).stream()
@@ -45,7 +42,6 @@ public class WishService {
                 .toList();
     }
 
-    @Transactional
     public Long add(Long memberId, Long productId) {
         Wish wish = new Wish(findMember(memberId), findProduct(productId));
         return wishRepository.save(wish).getId();

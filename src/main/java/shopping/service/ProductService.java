@@ -3,7 +3,6 @@ package shopping.service;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import shopping.dto.ProductRequest;
 import shopping.dto.ProductResponse;
@@ -22,12 +21,10 @@ public class ProductService {
         this.profanityValidator = profanityValidator;
     }
 
-    @Transactional
     public void delete(Long productId) {
         productRepository.delete(findProduct(productId));
     }
 
-    @Transactional
     public ProductResponse update(Long productId, ProductRequest request) {
         Product product = findProduct(productId);
         profanityValidator.validate(request.name());

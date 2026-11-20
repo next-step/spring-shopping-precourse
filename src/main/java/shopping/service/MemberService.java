@@ -3,7 +3,6 @@ package shopping.service;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import shopping.dto.MemberRequest;
 import shopping.dto.MemberResponse;
@@ -20,15 +19,13 @@ public class MemberService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Transactional
     public MemberResponse register(MemberRequest request) {
         validateDuplicateEmail(request.email());
         Member member = new Member(
                 request.email(), passwordEncoder.encode(request.password()));
-        return new MemberResponse(memberRepository.saveAndFlush(member).getId());
+        return new MemberResponse(memberRepository.save(member).getId());
     }
 
-    @Transactional(readOnly = true)
     public MemberResponse login(MemberRequest request) {
         Member member = memberRepository.findByEmail(request.email())
                 .orElseThrow(this::invalidCredentials);

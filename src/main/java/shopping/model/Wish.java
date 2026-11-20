@@ -1,31 +1,9 @@
 package shopping.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(name = "wishes")
 public class Wish {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "member_id")
-    private Member member;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "product_id")
-    private Product product;
-
-    protected Wish() {
-    }
+    private final Member member;
+    private final Product product;
 
     public Wish(Member member, Product product) {
         this.member = member;
@@ -36,7 +14,15 @@ public class Wish {
         return product;
     }
 
+    public boolean belongsTo(Long memberId) {
+        return member.getId().equals(memberId);
+    }
+
     public Long getId() {
         return id;
+    }
+
+    public void assignId(Long id) {
+        this.id = id;
     }
 }
