@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.assertj.MvcTestResult;
 import shopping.support.ApiTest;
+import shopping.support.FakeProfanityCheckerConfig;
 
 class ProductApiTest extends ApiTest {
 
@@ -92,6 +93,16 @@ class ProductApiTest extends ApiTest {
     }
 
     @Test
+    void 이름에_비속어가_있으면_400을_응답한다() {
+        String name = FakeProfanityCheckerConfig.PROFANITY;
+
+        MvcTestResult result = post("/api/products", productJson(name, 1000, IMAGE_URL));
+
+        assertThat(result).hasStatus(HttpStatus.BAD_REQUEST);
+        assertThat(result).bodyJson().extractingPath("$.message").asString().contains("비속어");
+    }
+
+    @Test
     void 가격이_음수이면_400을_응답한다() {
         MvcTestResult result = post("/api/products", productJson("콜라", -1, IMAGE_URL));
 
@@ -141,6 +152,17 @@ class ProductApiTest extends ApiTest {
         Long id = createProduct("콜라");
 
         MvcTestResult result = put(id, productJson("사이다!", 1, IMAGE_URL));
+
+        assertThat(result).hasStatus(HttpStatus.BAD_REQUEST);
+        assertThat(mvc.get().uri("/api/products/{id}", id))
+                .bodyJson().extractingPath("$.name").isEqualTo("콜라");
+    }
+
+    @Test
+    void 비속어로_수정하면_400을_응답하고_기존_값이_유지된다() {
+        Long id = createProduct("콜라");
+
+        MvcTestResult result = put(id, productJson(FakeProfanityCheckerConfig.PROFANITY, 1, IMAGE_URL));
 
         assertThat(result).hasStatus(HttpStatus.BAD_REQUEST);
         assertThat(mvc.get().uri("/api/products/{id}", id))

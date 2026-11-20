@@ -60,3 +60,9 @@ POST http://localhost:8080/api/products
 Content-Type: application/json
 
 {"name": "콜라", "price": 1500,
+
+### 비속어 이름 (400, "상품 이름에 비속어를 사용할 수 없습니다.") - 실제 PurgoMalum 호출
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{"name": "fuck", "price": 1500, "imageUrl": "https://example.com/cola.png"}
