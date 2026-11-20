@@ -24,6 +24,21 @@ public class MemberService {
         return new MemberResponse(memberRepository.saveAndFlush(member).getId());
     }
 
+    @Transactional(readOnly = true)
+    public MemberResponse login(MemberRequest request) {
+        Member member = memberRepository.findByEmail(request.email())
+                .orElseThrow(this::invalidCredentials);
+        if (!passwordEncoder.matches(request.password(), member.getPasswordHash())) {
+            throw invalidCredentials();
+        }
+        return new MemberResponse(member.getId());
+    }
+
+    private ResponseStatusException invalidCredentials() {
+        return new ResponseStatusException(
+                HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 일치하지 않습니다");
+    }
+
     private void validateDuplicateEmail(String email) {
         if (memberRepository.existsByEmail(email)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 등록된 이메일입니다");

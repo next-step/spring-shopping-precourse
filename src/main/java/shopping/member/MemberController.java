@@ -26,6 +26,11 @@ public class MemberController {
                 HttpStatus.CONFLICT, "이미 등록된 이메일입니다");
     }
 
+    @PostMapping("/login")
+    public MemberResponse login(@Valid @RequestBody MemberRequest request) {
+        return memberService.login(request);
+    }
+
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public MemberResponse register(@Valid @RequestBody MemberRequest request) {
