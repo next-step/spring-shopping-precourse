@@ -33,6 +33,10 @@ public final class WishList {
         return List.copyOf(items);
     }
 
+    public void remove(String token, Long wishId) {
+        wishes.remove(memberId(token), wishId);
+    }
+
     private Long memberId(String token) {
         if (token == null || token.isBlank()) {
             throw new IllegalArgumentException("유효하지 않은 인증 토큰입니다");
