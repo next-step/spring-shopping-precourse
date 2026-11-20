@@ -36,6 +36,12 @@ public abstract class ApiTest {
         return mvc.post().uri(uri).contentType(MediaType.APPLICATION_JSON).content(json).exchange();
     }
 
+    protected String memberJson(String email, String password) {
+        return """
+                {"email": "%s", "password": "%s"}
+                """.formatted(email, password);
+    }
+
     protected String productJson(String name, int price, String imageUrl) {
         return """
                 {"name": "%s", "price": %d, "imageUrl": "%s"}
