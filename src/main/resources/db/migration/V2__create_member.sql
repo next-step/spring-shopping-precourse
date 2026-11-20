@@ -1,0 +1,7 @@
+CREATE TABLE member
+(
+    id       BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email    VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(64)  NOT NULL,
+    token    VARCHAR(36) UNIQUE
+);
