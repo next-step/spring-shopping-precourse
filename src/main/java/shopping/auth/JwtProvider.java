@@ -12,7 +12,7 @@ import shopping.exception.UnauthorizedException;
 
 @Component
 public class JwtProvider {
-
+    private static final String BEARER_PREFIX = "Bearer ";
     private final SecretKey key;
     private final long expirationMs;
 
@@ -31,7 +31,12 @@ public class JwtProvider {
                 .signWith(key)
                 .compact();
     }
-
+    public Long getMemberIdFromHeader(String authorization) {
+        if (authorization == null || !authorization.startsWith(BEARER_PREFIX)) {
+            throw new UnauthorizedException("인증 토큰이 필요합니다.");
+        }
+        return getMemberId(authorization.substring(BEARER_PREFIX.length()));
+    }
     public Long getMemberId(String token) {
         try {
             String subject = Jwts.parser().verifyWith(key).build()

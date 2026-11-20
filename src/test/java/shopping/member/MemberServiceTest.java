@@ -58,4 +58,9 @@ class MemberServiceTest {
         assertThatThrownBy(() -> jwtProvider.getMemberId("fake.token.value"))
                 .isInstanceOf(UnauthorizedException.class);
     }
+    @Test
+    void 인증_헤더가_없으면_인증에_실패한다() {
+        assertThatThrownBy(() -> jwtProvider.getMemberIdFromHeader(null))
+                .isInstanceOf(UnauthorizedException.class);
+    }
 }
