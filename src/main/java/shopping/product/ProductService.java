@@ -3,6 +3,7 @@ package shopping.product;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shopping.common.exception.NotFoundException;
 import shopping.product.dto.ProductRequest;
 import shopping.product.dto.ProductResponse;
 
@@ -45,6 +46,6 @@ public class ProductService {
 
     private Product getProduct(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다. id=" + id));
+                .orElseThrow(() -> new NotFoundException("상품을 찾을 수 없습니다. id=" + id));
     }
 }
