@@ -106,8 +106,9 @@ Controller -> Service -> Repository -> DB
 
 
 ## AI 활용
-코드 생성은 하지 않고, 검색 및 학습 도우미 역할로 사용.
-코드는 구현 중 막히는 부분이 있을 때에 예제를 보여달라는 식으로 사용 예정.
+기본적으로 코드 생성은 하지 않고, 검색 및 학습 도우미 역할로 사용했다.
+Member 도메인과 Product 엔티티·테스트는 직접 작성하고 AI에게는 리뷰와 개념 질문만 했다.
+마감 당일에는 시간이 부족해 Product의 Service/Controller, PurgoMalum 비속어 검사, 예외 핸들러 정리, Product 관련 테스트를 AI(Claude)에게 작성시켰고, 이를 이 README에 밝혀 둔다.
 
 # 이 아래에 AI의 가이드를 받아 학습한 내용을 정리함
 
