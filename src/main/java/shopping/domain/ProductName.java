@@ -1,6 +1,5 @@
 package shopping.domain;
 
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class ProductName {
@@ -10,7 +9,7 @@ public class ProductName {
     private final String value;
 
     public ProductName(String value, ProfanityChecker profanityChecker) {
-        Objects.requireNonNull(profanityChecker, "비속어 검사기는 null일 수 없습니다.");
+        validateNotNull(profanityChecker, "비속어 검사기가 설정되지 않았습니다.");
         validateNotBlank(value);
         validateLength(value);
         validateCharacters(value);
@@ -26,13 +25,14 @@ public class ProductName {
 
     private void validateCharacters(String value) {
         if (!ALLOWED.matcher(value).matches()) {
-            throw new IllegalArgumentException("상품 이름에는 영문, 숫자, 공백, ()[]+-&/_ 만 사용할 수 있습니다.");
+            throw new IllegalArgumentException(
+                    "상품 이름에는 영문, 숫자, 띄어쓰기와 특수문자 ( ) [ ] + - & / _ 만 사용할 수 있습니다.");
         }
     }
 
     private void validateNotBlank(String value) {
         if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException("상품 이름은 비어 있을 수 없습니다.");
+            throw new IllegalArgumentException("상품 이름을 입력해 주세요.");
         }
     }
 
@@ -57,5 +57,11 @@ public class ProductName {
     @Override
     public int hashCode() {
         return value.hashCode();
+    }
+
+    private static void validateNotNull(Object value, String message) {
+        if (value == null) {
+            throw new NullPointerException(message);
+        }
     }
 }

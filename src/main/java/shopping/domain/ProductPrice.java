@@ -10,7 +10,7 @@ public class ProductPrice {
 
     private void validateNotNegative(long value) {
         if (value < 0) {
-            throw new IllegalArgumentException("상품 가격은 음수일 수 없습니다.");
+            throw new IllegalArgumentException("상품 가격은 0원 이상이어야 합니다.");
         }
     }
 

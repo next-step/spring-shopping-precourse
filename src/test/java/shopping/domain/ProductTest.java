@@ -143,4 +143,36 @@ class ProductTest {
 
         assertThat(product.id()).contains(new ProductId(7));
     }
+
+    @Test
+    @DisplayName("상품이 자기 이름과 같은지 스스로 알려준다")
+    void hasName() {
+        Product product = product();
+
+        assertThat(product.hasName(name("Galaxy S24"))).isTrue();
+        assertThat(product.hasName(name("Pixel 9"))).isFalse();
+        assertThat(product.hasName(name("galaxy s24"))).isFalse();
+    }
+
+    @Test
+    @DisplayName("상품이 자기 ID와 같은지 스스로 알려주고, 저장 전 상품은 어떤 ID와도 같지 않다")
+    void hasId() {
+        Product saved = new Product(new ProductId(7), name("Item"), price(1),
+                image("https://a.com"));
+
+        assertThat(saved.hasId(new ProductId(7))).isTrue();
+        assertThat(saved.hasId(new ProductId(8))).isFalse();
+        assertThat(product().hasId(new ProductId(7))).isFalse();
+    }
+
+    @Test
+    @DisplayName("이름이나 ID를 null로 물으면 예외가 발생한다")
+    void askWithNull() {
+        Product product = product();
+
+        assertThatThrownBy(() -> product.hasName(null))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> product.hasId(null))
+                .isInstanceOf(NullPointerException.class);
+    }
 }

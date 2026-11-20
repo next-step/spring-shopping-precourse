@@ -1,6 +1,5 @@
 package shopping.domain;
 
-import java.util.Objects;
 import java.util.Optional;
 
 public class Product {
@@ -15,7 +14,8 @@ public class Product {
     }
 
     public Product(ProductId id, ProductName name, ProductPrice price, ProductImage image) {
-        this.id = Objects.requireNonNull(id, "상품 ID는 null일 수 없습니다.");
+        validateNotNull(id, "상품 번호가 없습니다.");
+        this.id = id;
         assign(name, price, image);
     }
 
@@ -24,12 +24,22 @@ public class Product {
     }
 
     private void assign(ProductName name, ProductPrice price, ProductImage image) {
-        Objects.requireNonNull(name, "상품 이름은 null일 수 없습니다.");
-        Objects.requireNonNull(price, "상품 가격은 null일 수 없습니다.");
-        Objects.requireNonNull(image, "상품 이미지는 null일 수 없습니다.");
+        validateNotNull(name, "상품 이름 정보가 없습니다.");
+        validateNotNull(price, "상품 가격 정보가 없습니다.");
+        validateNotNull(image, "상품 이미지 정보가 없습니다.");
         this.name = name;
         this.price = price;
         this.image = image;
+    }
+
+    public boolean hasName(ProductName other) {
+        validateNotNull(other, "비교할 상품 이름이 없습니다.");
+        return name.equals(other);
+    }
+
+    public boolean hasId(ProductId other) {
+        validateNotNull(other, "비교할 상품 번호가 없습니다.");
+        return other.equals(id);
     }
 
     public Optional<ProductId> id() {
@@ -46,5 +56,11 @@ public class Product {
 
     public ProductImage image() {
         return image;
+    }
+
+    private static void validateNotNull(Object value, String message) {
+        if (value == null) {
+            throw new NullPointerException(message);
+        }
     }
 }
