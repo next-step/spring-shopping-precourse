@@ -68,3 +68,9 @@
   - 내 위시 항목만 삭제. 수량과 관계없이 항목 전체 삭제.
   - 위시 리스트에 담을 때 재고 예약 없음.
   - 구매 확정 시 재고 확인/차감 한 번에. 부족하면 구매 불가. 구매 구현 시 적용.
+
+## 로컬 실행
+
+- `./gradlew bootRun --args='--spring.profiles.active=local'`
+- `POST /api/members/register`에 `email`, `password`를 JSON으로 보내면 토큰 반환.
+- 재시작하면 회원/토큰 초기화.
