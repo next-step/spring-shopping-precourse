@@ -78,3 +78,4 @@
 - `GET /api/products`, `GET /api/products/{productId}` → 목록/단건 조회.
 - `POST /api/products` → 등록. Location으로 조회.
 - `PUT /api/products/{productId}`, `DELETE /api/products/{productId}` → 수정/삭제.
+- 상품명 검사 → PurgoMalum. 검사 실패 시 저장 불가 (503).

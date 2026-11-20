@@ -72,6 +72,11 @@ public class ProductController {
         return ResponseEntity.badRequest().build();
     }
 
+    @ExceptionHandler(ProfanityCheckUnavailableException.class)
+    ResponseEntity<Void> unavailableProfanityCheck() {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+    }
+
     private long price(ProductRequest request) {
         if (request.name() == null || request.price() == null
                 || request.url() == null || request.url().isBlank()) {

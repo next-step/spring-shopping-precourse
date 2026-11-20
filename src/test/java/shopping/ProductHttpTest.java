@@ -1,15 +1,30 @@
 package shopping;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("local")
 class ProductHttpTest {
+    private static final ProfanityStub profanity = new ProfanityStub();
+
+    @DynamicPropertySource
+    static void profanityEndpoint(DynamicPropertyRegistry properties) {
+        properties.add("shopping.profanity.endpoint", profanity::endpoint);
+    }
+
+    @AfterAll
+    static void stopProfanityStub() {
+        profanity.close();
+    }
+
     @LocalServerPort
     private int port;
 
@@ -99,6 +114,28 @@ class ProductHttpTest {
         Assertions.assertThat(http.send("DELETE", path, "", null).statusCode()).isEqualTo(204);
         Assertions.assertThat(http.send("GET", path, "", null).statusCode()).isEqualTo(404);
         Assertions.assertThat(http.send("DELETE", path, "", null).statusCode()).isEqualTo(404);
+    }
+
+    @Test
+    void 비속어가_포함된_상품은_등록할_수_없다() throws Exception {
+        var before = products.products();
+        var response = new LocalHttp(port).send("POST", "/api/products", """
+                {"name":"금칙어 & 상품","price":1000,"url":"https://example.com/item"}
+                """, null);
+
+        Assertions.assertThat(response.statusCode()).isEqualTo(400);
+        Assertions.assertThat(products.products()).isEqualTo(before);
+    }
+
+    @Test
+    void 이름_검사에_실패하면_기존_상품을_유지한다() throws Exception {
+        var product = products.registeredProduct("치이카와", 1000L, "https://example.com/first");
+        var response = new LocalHttp(port).send("PUT", "/api/products/" + product.id(), """
+                {"name":"검사 & 장애","price":2000,"url":"https://example.com/new"}
+                """, null);
+
+        Assertions.assertThat(response.statusCode()).isEqualTo(503);
+        Assertions.assertThat(products.product(product.id())).isEqualTo(product);
     }
 
     // 잘못된 가격으로 수정할 때 기존 상품을 유지하는지도 확인할 수 있다. 생략.

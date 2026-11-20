@@ -1,6 +1,9 @@
 package shopping;
 
-import java.util.List;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.time.Duration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -9,7 +12,18 @@ import org.springframework.context.annotation.Profile;
 @Profile("local")
 class LocalProductConfiguration {
     @Bean
-    ProductRepository productRepository() {
-        return new FakeProductRepository(new DefaultProductNameFilter(List.of()));
+    ProductRepository productRepository(ProductNameFilter filter) {
+        return new FakeProductRepository(filter);
+    }
+
+    @Bean
+    ProductNameFilter productNameFilter(HttpClient profanityHttpClient,
+            @Value("${shopping.profanity.endpoint}") String endpoint) {
+        return new PurgoMalumProductNameFilter(profanityHttpClient, URI.create(endpoint));
+    }
+
+    @Bean
+    HttpClient profanityHttpClient() {
+        return HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(2)).build();
     }
 }
