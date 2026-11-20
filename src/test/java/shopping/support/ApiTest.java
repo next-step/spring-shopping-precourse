@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.assertj.MvcTestResult;
@@ -19,6 +20,7 @@ import org.springframework.web.context.WebApplicationContext;
 public abstract class ApiTest {
 
     protected static final String IMAGE_URL = "https://example.com/image.png";
+    private static final String PASSWORD = "password123";
 
     @Autowired
     private WebApplicationContext context;
@@ -36,6 +38,18 @@ public abstract class ApiTest {
         return mvc.post().uri(uri).contentType(MediaType.APPLICATION_JSON).content(json).exchange();
     }
 
+    protected MvcTestResult postWithToken(String uri, String token, String json) {
+        return mvc.post().uri(uri)
+                .header(HttpHeaders.AUTHORIZATION, bearer(token))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+                .exchange();
+    }
+
+    protected String bearer(String token) {
+        return "Bearer " + token;
+    }
+
     protected String memberJson(String email, String password) {
         return """
                 {"email": "%s", "password": "%s"}
@@ -46,6 +60,11 @@ public abstract class ApiTest {
         return """
                 {"name": "%s", "price": %d, "imageUrl": "%s"}
                 """.formatted(name, price, imageUrl);
+    }
+
+    protected String registerAndGetToken(String email) {
+        MvcTestResult result = post("/api/members/register", memberJson(email, PASSWORD));
+        return JsonPath.read(body(result), "$.token");
     }
 
     protected Long createProduct(String name) {
