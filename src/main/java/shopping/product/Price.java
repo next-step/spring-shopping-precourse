@@ -1,7 +1,5 @@
 package shopping.product;
 
-import java.util.Objects;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
@@ -42,6 +40,6 @@ public class Price {
     }
     @Override 
     public int hashCode() {
-        return Objects.hashCode(value);
+        return Integer.hashCode(value);
     }
 }
