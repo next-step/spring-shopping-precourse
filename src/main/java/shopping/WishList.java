@@ -17,7 +17,7 @@ public final class WishList {
     public Wish registeredWish(String token, Long productId) {
         Long memberId = memberId(token);
         if (products.product(productId) == null) {
-            throw new IllegalArgumentException("존재하지 않는 상품입니다");
+            throw new ProductNotFoundException();
         }
         return wishes.registeredWish(memberId, productId);
     }
@@ -39,11 +39,11 @@ public final class WishList {
 
     private Long memberId(String token) {
         if (token == null || token.isBlank()) {
-            throw new IllegalArgumentException("유효하지 않은 인증 토큰입니다");
+            throw new InvalidTokenException();
         }
         Long memberId = tokens.memberId(token);
         if (memberId == null) {
-            throw new IllegalArgumentException("유효하지 않은 인증 토큰입니다");
+            throw new InvalidTokenException();
         }
         return memberId;
     }

@@ -79,3 +79,4 @@
 - `POST /api/products` → 등록. Location으로 조회.
 - `PUT /api/products/{productId}`, `DELETE /api/products/{productId}` → 수정/삭제.
 - 상품명 검사 → PurgoMalum. 검사 실패 시 저장 불가 (503).
+- `POST /api/wishes` → 상품 담기. `GET /api/wishes` → 내 목록. Bearer 토큰 필요.
