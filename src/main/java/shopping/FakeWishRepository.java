@@ -31,7 +31,7 @@ public final class FakeWishRepository implements WishRepository {
     public synchronized void remove(Long memberId, Long wishId) {
         var wishes = wishesByMember.get(memberId);
         if (wishes == null || !wishes.values().removeIf(wish -> wish.id().equals(wishId))) {
-            throw new IllegalArgumentException("존재하지 않는 위시 항목입니다");
+            throw new WishNotFoundException();
         }
     }
 }

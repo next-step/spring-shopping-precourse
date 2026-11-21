@@ -70,6 +70,31 @@ class WishHttpTest {
         Assertions.assertThat(http().send("POST", WISHES, body(item), token).statusCode()).isEqualTo(404);
     }
 
+    @Test
+    void 수량이_2인_내_위시도_한번에_삭제한다() throws Exception {
+        var item = product();
+        String token = tokens.token(4L);
+        wishId(item, token);
+        String path = WISHES + "/" + wishId(item, token);
+
+        Assertions.assertThat(http().send("DELETE", path, "", token).statusCode()).isEqualTo(204);
+        Assertions.assertThat(LocalHttp.json(http().send("GET", WISHES, "", token)).size()).isZero();
+    }
+
+    @Test
+    void 다른_회원의_위시나_없는_위시는_삭제할_수_없다() throws Exception {
+        String owner = tokens.token(5L);
+        String other = tokens.token(6L);
+        long wishId = wishId(product(), owner);
+        String path = WISHES + "/" + wishId;
+
+        Assertions.assertThat(http().send("DELETE", path, "", other).statusCode()).isEqualTo(404);
+        Assertions.assertThat(http().send("DELETE", WISHES + "/999999", "", owner).statusCode())
+                .isEqualTo(404);
+        var list = LocalHttp.json(http().send("GET", WISHES, "", owner));
+        Assertions.assertThat(list.get(0).get("wishId").asLong()).isEqualTo(wishId);
+    }
+
     private Product product() {
         return products.registeredProduct("치이카와", 1000L, "https://example.com/item");
     }
